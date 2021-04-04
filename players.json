@@ -4,7 +4,7 @@
     "totalPlayers":"4",
     "loot" :{
       "id" : 0,
-      "value" : 400,
+      "value" : 200,
       "name" : "Teste"
     },
     "players": [
@@ -28,11 +28,11 @@
     "inicialPayments" : [
       {
         "idPlayer" : 0,
-        "value" : 150
+        "value" : 0
       },
       {
         "idPlayer" : 1,
-        "value" : 150
+        "value" : 100
       },
       {
         "idPlayer" : 2,

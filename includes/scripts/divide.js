@@ -3,22 +3,66 @@ import  Loot  from './Loot';
 import  Debt  from './Debt';
 
 var lootEvents = [];
+var players = [];
+let db = new Localbase('db');
 
 document.addEventListener('DOMContentLoaded', async function() {    
     var table = document.getElementById("tableLoot");
-    myFunction();
+    
+    getLootEvents();
+    getPlayer();
+   
     //const loot = new Loot('01','500');
     //console.log(loot);
 
 }, false);
 
+function getPlayer(){
+
+  db.collection('players').get().then(users => {
+    if(users.length == 0){
+      db.collection('players').add({
+        id: 0,
+        name: 'Elator',
+      })
+      db.collection('players').add({
+        id: 1,
+        name: 'Platey',
+      })
+      db.collection('players').add({
+        id: 2,
+        name: 'Gabriel',
+      })
+      db.collection('players').add({
+        id: 3,
+        name: 'Julio',
+      })
+    }else{
+      players = users;
+      //console.table(players);
+
+    }
+  })
+  
+}
+
+function getLootEvents(){
+  
+  db.collection('lootEvent').get().then(lootEvent2 => {
+    if(lootEvent2.length > 0){
+
+      lootEvents = lootEvent2.slice();
+     // console.log(lootEvents);
+      myFunction();
+    }
+  })
+}
 
 function myFunction() {
 
     fetch('../../players.json')
       .then(results => results.json())
-      .then(data => myFunction2(data));
-
+      .then(data => myFunction2(data))
       
   }
 
@@ -28,8 +72,22 @@ function myFunction() {
     let table = document.getElementById("tableLoot");
 
     var lootEvent = data;
+    var lastLootEvent = [];
+    if(lootEvents.length > 0){
+      console.log( "-----------",lootEvents)
+      lastLootEvent = lootEvents[lootEvents.length -1].lootEvent;
+      
+      lootEvent.id = lastLootEvent.id + 1;
+      lootEvent.order = lastLootEvent.order + 1;
+    }else{     
+      lootEvent.id = 0;
+      lootEvent.order = 0;
+    }
+   
+    //lootEvent = cleanStart(lootEvent);
 
-    var totalPlayers = lootEvent.totalPlayers;
+    var totalPlayers = players.length;
+    console.log(lootEvent);
     var limit = lootEvent.loot.value;
     var fullShare = limit/totalPlayers;
 
@@ -42,18 +100,41 @@ function myFunction() {
    
     var share = total/(lootEvent.players.length - overTotal.length);
 
+
     partOfDebt(over);
+
     //console.log( over);
     var partShare = partOfShare(lootEvent, total, over)
+
+    
+
+    function compareID(a, b) {
+
+      return a.id - b.id;
+    }
+
+    partShare = partShare.sort(compareID);
 
     console.log(partShare);
 
     setFinalPay(lootEvent, over, share, partShare);
 
-    setDebt(lootEvent, over, share, fullShare, partShare)
+    if(lootEvents.length > 0){
+      console.log(lastLootEvent);
+      debtPayment(lootEvent, over, fullShare, lastLootEvent, partShare);
+    }
 
-    console.log( lootEvent);
+    setDebt(lootEvent, over, share, fullShare, partShare, lastLootEvent )
 
+
+    //db.collection('lootEvent').add({
+    // lootEvent
+    //})
+    
+    lootEvents.push(lootEvent);
+    console.table((lootEvent.finalPayments));
+    console.log(lootEvent);
+    
 
 
     //let total = getTotal();
@@ -93,6 +174,82 @@ function myFunction() {
     */
   }
 
+
+  function debtPayment(lootEvent, over, fullShare, lastLootEvent, partShare){
+    console.log("debtPayment", partShare);
+
+
+    var count = 0 ;
+    partShare.forEach(item => {
+      if(!over[item.id].status){
+        console.log( item.part,lastLootEvent.finalPayments[item.id].value , item.id);
+        if (lastLootEvent.finalPayments[item.id].value < 0  &&  item.part >= Math.abs(lastLootEvent.finalPayments[item.id].value) ) {
+          console.log("debtPayment 2");
+          lastLootEvent.debt.forEach(debtItem => {
+            //console.log("debtPayment 3", debtItem.idOwner, debtItem.idTarget, debtItem.value  );
+           if(debtItem.idOwner == item.id && debtItem.value > 0){
+             
+             item.part -= debtItem.value;
+             item.payment = true;
+             console.log(item);
+             lootEvent.finalPayments[debtItem.idTarget].value += debtItem.value;
+             debtItem.value = 0 ;
+             //console.log(debtItem.value);
+           }
+         })
+         lootEvent.finalPayments[item.id].value = partShare[item.id].part ;
+        } else {
+          console.log("debtPayment Parts", item.id, lastLootEvent.finalPayments[item.id].value, item.part );
+          if(lastLootEvent.finalPayments[item.id].value < 0 &&  item.part < Math.abs(lastLootEvent.finalPayments[item.id].value) ){
+            console.log("debtPayment Parts 2");
+            var countDebt = 0 ;
+            lastLootEvent.debt.forEach(debtItem => {   
+             if(debtItem.idOwner == item.id && debtItem.value > 0){
+              countDebt ++;
+             }
+           })
+           console.log(countDebt);
+           var debtPayment = item.part / countDebt;
+           while(item.part > 0){
+            lastLootEvent.debt.every(debtItem => {
+              if(debtItem.idOwner == item.id && debtItem.value > 0){
+               if (debtItem.value < debtPayment) {
+                item.part -= debtPayment;
+                item.payment = true;
+                console.log(item);
+                lootEvent.finalPayments[debtItem.idTarget].value += debtPayment;
+                debtItem.value -= 0;
+                countDebt --;
+                return false;
+               }else{
+                item.part -= debtPayment;
+                item.payment = true;
+                console.log(item);
+                lootEvent.finalPayments[debtItem.idTarget].value += debtPayment;
+                debtItem.value -= debtPayment;
+               }
+              }
+              return true;
+            })
+           }
+          }
+        }
+      }else{
+        //console.log('Teste', item.value);
+      }
+      count++;
+      
+    })
+
+
+  }
+
+ 
+
+  function cleanStart(lootEvent){
+   
+  }
+
   function overLimit(data, fullShare){
     var mydata = data;
 
@@ -121,9 +278,9 @@ function myFunction() {
     over.forEach(item => {
       item.status ? totalDebt -= item.value : totalDebt -= 0;
 
-  })
-  over.forEach(item => {
-    item.status ? item.part = Math.abs((item.value/(totalDebt/100)))/100 : item.part = 0;
+    })
+    over.forEach(item => {
+      item.status ? item.part = Math.abs((item.value/(totalDebt/100)))/100 : item.part = 0;
 
 })
     //console.log(totalDebt)
@@ -145,8 +302,8 @@ function myFunction() {
         let p = {id: inicialPayments.idPlayer , part: 0 };
         partShare.push(p);
       }
-    count ++;
-  })
+      count ++;
+    })
   var count = 0;
   console.log("Count2 "+count2)
     lootEvent.inicialPayments.forEach(inicialPayments => {
@@ -177,22 +334,24 @@ function myFunction() {
       count ++;
     })
 
-    console.log(partShare)
+    //console.log(partShare)
     return partShare;
   }
 
 
-  function setDebt(lootEvent, over, share, fullShare, partShare){
+  function setDebt(lootEvent, over, share, fullShare, partShare, lastLootEvent){
     var count = 0 ;
+    console.log(partShare);
     over.forEach(item => {
       if(!item.status){
         var restHolder = 0 ;
-        console.log('Teste : '+share, lootEvent.inicialPayments[count].value);
         if (lootEvent.inicialPayments[count].value > share) {
+          if(partShare[count].payment){
+            restHolder = fullShare - share;
+          }
           restHolder = fullShare - lootEvent.inicialPayments[count].value - partShare[count].part;
         }else{
-          restHolder = fullShare - partShare[count].part; ;
-          //restHolder = 0;
+          restHolder = fullShare - partShare[count].part; 
         }
        
         over.forEach(item2 => {
@@ -204,18 +363,32 @@ function myFunction() {
              if(idHolder != item2.id)
               return item.idOwner == item2.id  && item.idTarget ==  idHolder ;
             });
-           //console.log(index);
-           lootEvent.debt[index].value = restHolder * item2.part;
+           lootEvent.debt[index].value = (restHolder * item2.part) ;//
+           //console.log("DEBT",lootEvent.debt[index].value, lastLootEvent.debt[index].value, idHolder);
+           lootEvent.debt[index].value += lastLootEvent.debt[index].value;
+          }else{
+            var debt = lastLootEvent.debt;
+            var idHolder = item.id;
+            //console.log("DEBT",idHolder ,item2.id);
+            if(idHolder != item2.id){
+              var index = debt.findIndex(function (item) {
+                //console.log('Item id :'+idHolder, 'Item2 id :'+item2.id);
+               if(idHolder != item2.id)
+                return item.idOwner == idHolder   && item.idTarget ==  item2.id;
+              });
+              
+             
+             lootEvent.debt[index].value += lastLootEvent.debt[index].value;
+            }
+            
           }
-           
-    
        })
       }else{
-        //console.log('Teste', item.value);
+       
       }
       count++;
       
-  })
+    })
   }
 
   function setFinalPay(lootEvent, over, share, partShare){
@@ -223,25 +396,30 @@ function myFunction() {
     
       let count  = 0 ;
       lootEvent.finalPayments.forEach(finalPayment => {
-        if(!over[count].status){
-          finalPayment.value = partShare[count].part; 
+        if(!over[finalPayment.idPlayer].status){
+          var id = finalPayment.idPlayer ;
+          finalPayment.value += partShare[id].part; 
+          //console.log(finalPayment.value , finalPayment.idPlayer, partShare[finalPayment.idPlayer].part);          
         }    
         else{
-          finalPayment.value = over[count].value;
+          finalPayment.value = over[finalPayment.idPlayer].value;
         }
         count++;  
       })
-  console.table(lootEvent.finalPayments);
+      if(lootEvent.finalPayments[0].idPlayer == 0){
+        lootEvent.finalPayments[0].value = over[0].value;
+
+        //console.log(partShare[0].part);
+        //console.log(JSON.stringify(partShare));
+        //console.table(partShare);
+        //console.table(lootEvent.finalPayments);
+      }
+
   }
 
 
-  function debtPayment(){
 
-  }
 
-  function getDebt(idOwner, idTarget){
-    
-  }
 
   function getTotal(){
 
