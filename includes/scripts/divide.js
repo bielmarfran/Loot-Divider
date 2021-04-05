@@ -74,7 +74,7 @@ function myFunction() {
     var lootEvent = data;
     var lastLootEvent = [];
     if(lootEvents.length > 0){
-      console.log( "-----------",lootEvents)
+      //console.log( "-----------",lootEvents)
       lastLootEvent = lootEvents[lootEvents.length -1].lootEvent;
       
       lootEvent.id = lastLootEvent.id + 1;
@@ -87,9 +87,11 @@ function myFunction() {
     //lootEvent = cleanStart(lootEvent);
 
     var totalPlayers = players.length;
-    console.log(lootEvent);
+    //console.log(lootEvent);
     var limit = lootEvent.loot.value;
     var fullShare = limit/totalPlayers;
+
+    console.log("TTT",fullShare);
 
     const over = overLimit(data,fullShare);
     
@@ -103,10 +105,10 @@ function myFunction() {
 
     partOfDebt(over);
 
-    //console.log( over);
-    var partShare = partOfShare(lootEvent, total, over)
+    console.log( over);
+    var partShare = partOfShare(lootEvent, total, over, share, fullShare, overTotal)
 
-    
+
 
     function compareID(a, b) {
 
@@ -115,136 +117,301 @@ function myFunction() {
 
     partShare = partShare.sort(compareID);
 
-    console.log(partShare);
+    partShare.forEach(item => {
+      item.partFinal = item.part;
+      item.ExtraPay = 0;
+      //console.log(JSON.stringify(item, lastLootEvent, partShare));
+    })
 
-    setFinalPay(lootEvent, over, share, partShare);
+   
+
+
+    setDebt(lootEvent, over, share, fullShare, partShare, lastLootEvent);
+    
 
     if(lootEvents.length > 0){
-      console.log(lastLootEvent);
-      debtPayment(lootEvent, over, fullShare, lastLootEvent, partShare);
+      partShare.forEach(item => {
+        //while(item.part == 0 && item.ExtraPay > 0){
+          pay(item, lootEvent , lastLootEvent, partShare, over);
+        //}
+        
+      })
+      console.log("-----------------------");
+      partShare.forEach(item => {
+        //while(item.part == 0 && item.ExtraPay > 0){
+          pay2(item, lootEvent , lastLootEvent, partShare, over);
+        //}
+        
+      })
+
+      partOfDebt(over);
+      /*
+      partShare.forEach(item => {
+        //while(item.part == 0 && item.ExtraPay > 0){
+          pay(item, lootEvent , lastLootEvent, partShare, over);
+        //}
+        
+      })*/
+      
+      //console.log(lastLootEvent);
     }
 
-    setDebt(lootEvent, over, share, fullShare, partShare, lastLootEvent )
+    
+    //console.log(JSON.stringify(lootEvent.debt));
+    //console.log(lootEvent.debt);
+    console.table(partShare)
+    //console.table(lootEvent.debt);
+    //console.table(over);
+    
+
+
+    setFinalPay(lootEvent, over, partShare, lastLootEvent);
+
+    console.table(lootEvent.finalPayments);
+
+
+    //setDebt(lootEvent, over, share, fullShare, partShare, lastLootEvent )
 
 
     //db.collection('lootEvent').add({
     // lootEvent
     //})
     
-    lootEvents.push(lootEvent);
-    console.table((lootEvent.finalPayments));
+    //lootEvents.push(lootEvent);
+
+    //console.table((lootEvent.finalPayments));
     console.log(lootEvent);
     
 
+  }
 
-    //let total = getTotal();
-
-    /*
-    if(total <= 0){
-      alert("Erro");
-    }else{
-      let share = total / 4;
-      //console.log(mydata);
-      for (var index = mydata.players.length; index > 0; index--) {
-        //console.log(index);      
-        let row = document.getElementById("tr"+index);
-        for (let index = 0; index < mydata.players.length; index++) {
-          let cell = row.insertCell(2);
-          cell.setAttribute("class","headerStyle");
-          cell.setAttribute("ondblclick","teste()")
-          cell.innerHTML = mydata.players[index].name;
-          cell.setAttribute("id","head")
-        }  
-      }
-
-      let table = document.getElementById("rowTbody");
-      for (let index = 0; index < 1; index++) {
-        let row = table.insertRow(0);
-        row.setAttribute("class"," rowTableTr flex-no wrap");  
-        row.setAttribute("id","row"+index);
-        for (let index = 0; index < mydata.players.length; index++) {
-          let cell2 = row.insertCell(0);
-          cell2.setAttribute("class"," rowTableTd");  
-          cell2.innerHTML = share;
-          
-        }
-      }
   
+  function setFinalPay(lootEvent, over, partShare, lastLootEvent){
+
+    let count  = 0 ;
+    lootEvent.finalPayments.forEach(finalPayment => {
+
+      if(!over[finalPayment.idPlayer].status){
+        var id = finalPayment.idPlayer ;
+        var extra = 0 ;
+        if(partShare[id].ExtraPay > 0){
+          extra = partShare[id].ExtraPay;
+        }
+        finalPayment.value = partShare[id].partFinal + extra; 
+        if( finalPayment.value + extra == 0){
+          var totalDebt = 0 ;
+          lootEvent.debt.forEach(debtItem => {
+            debtItem.idOwner == finalPayment.idPlayer  ? totalDebt +=debtItem.value : totalDebt += 0;
+          })
+          totalDebt != 0 ?   finalPayment.value = - (totalDebt) : finalPayment.value = 0;
+          //finalPayment.value = finalPayment.value + extra;
+        }
+        //console.log(finalPayment.value , finalPayment.idPlayer, partShare[finalPayment.idPlayer].part);          
+      }    
+      else{
+        var extra = 0 ;
+        var id = finalPayment.idPlayer ;
+        if(partShare[id].ExtraPay > 0){
+          extra = partShare[id].ExtraPay;
+        }
+        console.log(JSON.stringify(lootEvent.debt));
+        var totalDebt = 0 ;
+        lootEvent.debt.forEach(debtItem => {
+          console.log('BUMFD',debtItem.idOwner , finalPayment.idPlayer )
+          debtItem.idOwner == finalPayment.idPlayer ?   totalDebt +=debtItem.value  : totalDebt += 0;//
+        })
+        console.log('BUMFD',totalDebt)
+        totalDebt != 0 ?   finalPayment.value = - (totalDebt) : finalPayment.value = 0;
+        finalPayment.value += extra;
+      }
+
+      count++;  
+    })
+      //if(lootEvent.finalPayments[0].idPlayer == 0){
+     //   lootEvent.finalPayments[0].value = over[0].value;
+      //}
+
+  }
+
+  function pay(item, lootEvent ,  lastLootEvent, partShare, over){
+    //item.payment = false;
+    if(item.part > 0){
+      console.log(item.id,over[item.id].value, item.part);
+      var holder = 0;
+      if(over[item.id].value  < 0){
+        holder = lover[item.id].value;
+      }
+      if ((lastLootEvent.finalPayments[item.id].value + holder) < 0  &&  item.part >= Math.abs((lastLootEvent.finalPayments[item.id].value +holder)) ){
+        payAll(item, lastLootEvent, partShare, over, lootEvent);
+      }else{
+        if((lastLootEvent.finalPayments[item.id].value + holder)< 0 &&  item.part < Math.abs((lastLootEvent.finalPayments[item.id].value + holder)) ){       
+          payParts(item,lastLootEvent, partShare, over, lootEvent);
+        }   
+      }
+    }else{ 
+
+        lootEvent.finalPayments[item.id].value +=  lastLootEvent.finalPayments[item.id].value;   
+      
     }
-    */
+  }
+  
+  function pay2(item, lootEvent ,  lastLootEvent, partShare, over){
+
+    if(item.ExtraPay > 0){
+      //console.log(item.id, over[item.id].value, item.part);
+      var holder = 0;
+      if(lastLootEvent.finalPayments[item.id].value  < 0){
+        holder = lastLootEvent.finalPayments[item.id].value;
+      }
+
+      if ((holder + over[item.id].value) < 0  &&  item.part >= Math.abs((holder + over[item.id].value)) ){
+        item.partFinal = item.part;
+        item.part = 0;
+        payAll(item, lastLootEvent, partShare, over, lootEvent);
+      }else{
+       
+        if((holder + over[item.id].value) < 0 &&  item.part < Math.abs((holder + over[item.id].value)) ){ 
+          item.partFinal = item.part;
+          item.part = 0;
+          payParts(item,lastLootEvent, partShare, over, lootEvent);
+
+        }   
+      }
+    }
   }
 
 
-  function debtPayment(lootEvent, over, fullShare, lastLootEvent, partShare){
-    console.log("debtPayment", partShare);
-
-
-    var count = 0 ;
-    partShare.forEach(item => {
-      if(!over[item.id].status){
-        console.log( item.part,lastLootEvent.finalPayments[item.id].value , item.id);
-        if (lastLootEvent.finalPayments[item.id].value < 0  &&  item.part >= Math.abs(lastLootEvent.finalPayments[item.id].value) ) {
-          console.log("debtPayment 2");
-          lastLootEvent.debt.forEach(debtItem => {
-            //console.log("debtPayment 3", debtItem.idOwner, debtItem.idTarget, debtItem.value  );
-           if(debtItem.idOwner == item.id && debtItem.value > 0){
-             
-             item.part -= debtItem.value;
-             item.payment = true;
-             console.log(item);
-             lootEvent.finalPayments[debtItem.idTarget].value += debtItem.value;
-             debtItem.value = 0 ;
-             //console.log(debtItem.value);
-           }
-         })
-         lootEvent.finalPayments[item.id].value = partShare[item.id].part ;
-        } else {
-          console.log("debtPayment Parts", item.id, lastLootEvent.finalPayments[item.id].value, item.part );
-          if(lastLootEvent.finalPayments[item.id].value < 0 &&  item.part < Math.abs(lastLootEvent.finalPayments[item.id].value) ){
-            console.log("debtPayment Parts 2");
-            var countDebt = 0 ;
-            lastLootEvent.debt.forEach(debtItem => {   
-             if(debtItem.idOwner == item.id && debtItem.value > 0){
-              countDebt ++;
-             }
-           })
-           console.log(countDebt);
-           var debtPayment = item.part / countDebt;
-           while(item.part > 0){
-            lastLootEvent.debt.every(debtItem => {
-              if(debtItem.idOwner == item.id && debtItem.value > 0){
-               if (debtItem.value < debtPayment) {
-                item.part -= debtPayment;
-                item.payment = true;
-                console.log(item);
-                lootEvent.finalPayments[debtItem.idTarget].value += debtPayment;
-                debtItem.value -= 0;
-                countDebt --;
-                return false;
-               }else{
-                item.part -= debtPayment;
-                item.payment = true;
-                console.log(item);
-                lootEvent.finalPayments[debtItem.idTarget].value += debtPayment;
-                debtItem.value -= debtPayment;
-               }
-              }
-              return true;
-            })
-           }
-          }
+  function payAll(item, lastLootEvent, partShare, over, lootEvent){
+    console.log('payAll','ID : '+item.id);
+    lootEvent.debt.forEach(debtItem => {
+            
+      if(debtItem.idOwner == item.id && debtItem.value > 0){
+        
+        item.partFinal -= debtItem.value;
+        if(over[item.id].value < 0){
+          over[item.id].value += debtItem.value;
         }
+        if(over[item.id].value > 0){
+          over[item.id].value = 0;
+        }
+        //console.log(item);
+        partShare[debtItem.idTarget].ExtraPay += debtItem.value;
+        //item.ExtraPay -= debtItem.value;
+        debtItem.value = 0 ;
+        
+      }
+    })
+  }
+
+  function payParts(item,lastLootEvent, partShare, over, lootEvent){
+    console.log('payParts','ID : '+item.id);
+      //console.log("debtPayment Parts 2");
+      var countDebt = 0 ;
+      lootEvent.debt.forEach(debtItem => {   
+       if(debtItem.idOwner == item.id && debtItem.value > 0){
+        countDebt ++;
+       }
+     })
+     //console.log(countDebt);
+     
+     
+     var debtPayment = item.partFinal / countDebt;
+     console.log('payParts 2','ID : '+item.id,debtPayment);
+     var count =0;
+     while(item.partFinal > 0){
+      console.log('payParts 3','PART : '+item.part);
+       count ++;
+      lootEvent.debt.every(debtItem => {
+        if(debtItem.idOwner == item.id && debtItem.value > 0){
+         if (debtItem.value < debtPayment) {
+          item.partFinal -= debtPayment;
+          if(over[item.id].value < 0){
+            over[item.id].value += debtPayment;
+          }
+          //console.log(item);
+          partShare[debtItem.idTarget].ExtraPay += debtPayment;
+          item.ExtraPay -= debtItem.value;
+          debtItem.value -= 0;
+          countDebt --;
+          return false;
+         }else{
+           if(item.partFinal > 0){
+            //console.log(item.part);
+            item.partFinal -= debtPayment;
+            if(over[item.id].value < 0){
+              over[item.id].value += debtPayment;
+            }       
+            if(over[item.id].value > 0){
+              over[item.id].value = 0;
+            }
+            
+            //console.log(item);
+            partShare[debtItem.idTarget].ExtraPay += debtPayment;
+            item.ExtraPay -= debtItem.value;
+            debtItem.value -= debtPayment;
+           }
+
+         }
+        }
+       
+        if(count == 5){
+          //throw new Error('This is not an error. This is just to abort javascript');
+        }
+        return true;
+      })
+     }
+     console.log('payParts 4','ID : '+item.id);
+  }
+  
+
+ 
+  function setDebt(lootEvent, over, share, fullShare, partShare, lastLootEvent){
+    var count = 0 ;
+    //console.log(partShare);
+    //console.log(over);
+    console.log(fullShare);
+
+    lootEvent.debt.forEach((item,index) => {
+      item.value = lastLootEvent.debt[index].value;
+    })
+        
+    console.log(JSON.stringify(lootEvent.debt));
+
+    over.forEach(item => {
+      if(!item.status){
+        var restHolder = 0 ;
+        if (lootEvent.inicialPayments[count].value > share) {
+          restHolder = fullShare - lootEvent.inicialPayments[count].value - partShare[count].part;
+        }else{
+
+          restHolder = fullShare -  lootEvent.inicialPayments[count].value - partShare[count].part;    
+          
+        }
+       
+        over.forEach(item2 => {
+          if(item2.status){
+            var debt = lootEvent.debt;
+            var idHolder = item.id;
+            var index = debt.findIndex(function (item) {
+
+             if(idHolder != item2.id)
+              return item.idOwner == item2.id  && item.idTarget ==  idHolder ;
+            });  
+           console.log('A---',restHolder, item2.part, idHolder);
+           lootEvent.debt[index].value += (restHolder * item2.part) ;//
+           console.log(lootEvent.debt[index].value )
+
+           //console.log(JSON.stringify(lootEvent.debt));
+          
+          }
+       })
       }else{
-        //console.log('Teste', item.value);
+       
       }
       count++;
       
     })
-
-
   }
-
- 
 
   function cleanStart(lootEvent){
    
@@ -256,6 +423,9 @@ function myFunction() {
     var payments = mydata.inicialPayments;
     var inicialPayments = payments.map(function(payments) {
       var debt = -(payments.value - fullShare);
+      if(payments.value == fullShare ){
+        debt = 0
+      }
       return payments.value >= fullShare ? {id: payments.idPlayer ,status: true, value: debt } : {id: payments.idPlayer ,status : false, value: payments.value };
   });
    
@@ -280,146 +450,109 @@ function myFunction() {
 
     })
     over.forEach(item => {
-      item.status ? item.part = Math.abs((item.value/(totalDebt/100)))/100 : item.part = 0;
+      if(item.status){
+        if(item.value == 0){
+          item.part = 0;
+        }else{
+          item.part = Math.abs((item.value/(totalDebt/100)))/100
+        }            
+      }else{
+        item.part = 0
+      }
+
 
 })
     //console.log(totalDebt)
   }
 
-  function partOfShare(lootEvent, total, over){
-    var count = 0 ;
-    var count2 = 0 ;
+  function partOfShare(lootEvent, total, over, share , fullShare, overTotal){
     var partShare = [];
-    lootEvent.inicialPayments.forEach(inicialPayments => {
-      if(!over[count].status){
-        if(inicialPayments.value >= total){
-          let p = {id: inicialPayments.idPlayer , part: 0 };
-          partShare.push(p);
-        }else{
-          count2 ++;
-        }  
-      }else{
-        let p = {id: inicialPayments.idPlayer , part: 0 };
+    if(overTotal.length == 0){
+      lootEvent.inicialPayments.forEach(inicialPayments => {
+        let p = {id: inicialPayments.idPlayer , part: fullShare - inicialPayments.value, partFinal: 0 };
         partShare.push(p);
-      }
-      count ++;
-    })
-  var count = 0;
-  console.log("Count2 "+count2)
-    lootEvent.inicialPayments.forEach(inicialPayments => {
-      if(!over[count].status){
-        if(inicialPayments.value < total){
+      })
+     
+    }else{
+      if(total == 0){
+        lootEvent.inicialPayments.forEach(inicialPayments => {
+          var holder = 0;
           if(inicialPayments.value > 0){
-            let p = {id: inicialPayments.idPlayer , part: (total-inicialPayments.value)/count2 };
-            partShare.push(p);
-            total = total - (total-inicialPayments.value)/count2;
-            count2 --;
+            holder = fullShare -  inicialPayments.value;
           }
-
-        }  
-      }
-      count ++;
-    })
-    var count = 0;
-    lootEvent.inicialPayments.forEach(inicialPayments => {
-      if(!over[count].status){
-        if(inicialPayments.value < total){
-          if(inicialPayments.value == 0){
-            let p = {id: inicialPayments.idPlayer , part: (total-inicialPayments.value)/count2 };
+          let p = {id: inicialPayments.idPlayer , part: holder, partFinal: 0 };
+          partShare.push(p);
+        })
+      }else{
+        var count = 0 ; 
+        var count2 = 0 ;
+        console.log('AXB',total);
+        lootEvent.inicialPayments.forEach(inicialPayments => {
+          if(!over[count].status){
+            if(inicialPayments.value >= total){
+              let p = {id: inicialPayments.idPlayer , part: 0 , partFinal: 0 };
+              partShare.push(p);
+            }else{
+              count2 ++;
+            }  
+          }else{
+            let p = {id: inicialPayments.idPlayer , part: 0 , partFinal: 0 };
             partShare.push(p);
           }
-
-        }  
+          count ++;
+        })
+      var count = 0;
+      //console.log("Count2 "+count2)
+      lootEvent.inicialPayments.forEach(inicialPayments => {
+        if(!over[count].status){
+          if(inicialPayments.value < total){
+            if(inicialPayments.value > 0){
+              if(inicialPayments.value < total/count2){
+                let p = {id: inicialPayments.idPlayer , part: (total-inicialPayments.value)/count2, partFinal: 0 };
+                partShare.push(p);
+                total = total - (total-inicialPayments.value)/count2;
+                count2 --;
+              }else{
+                console.log(fullShare, inicialPayments.value)
+                if( fullShare - inicialPayments.value  >= total - (fullShare - inicialPayments.value )){
+                  let p = {id: inicialPayments.idPlayer , part: 0, partFinal: 0 };
+                  partShare.push(p);
+                  count2 --;
+                }else{
+                  let p = {id: inicialPayments.idPlayer , part: -( inicialPayments.value - fullShare), partFinal: 0 };
+                  partShare.push(p);
+                  total = total - (fullShare - inicialPayments.value );
+                  count2 --;
+                }
+    
+    
+              }
+          
+    
+            }
+          }
+        }
+         count ++;
+        })
+        var count = 0;
+        lootEvent.inicialPayments.forEach(inicialPayments => {
+          if(!over[count].status){
+            if(inicialPayments.value == 0){
+                let p = {id: inicialPayments.idPlayer , part: (total-inicialPayments.value)/count2 , partFinal: 0 };
+                partShare.push(p);
+            } 
+          }
+          count ++;
+        })
       }
-      count ++;
-    })
+     
+    }
+    
+
 
     //console.log(partShare)
     return partShare;
   }
-
-
-  function setDebt(lootEvent, over, share, fullShare, partShare, lastLootEvent){
-    var count = 0 ;
-    console.log(partShare);
-    over.forEach(item => {
-      if(!item.status){
-        var restHolder = 0 ;
-        if (lootEvent.inicialPayments[count].value > share) {
-          if(partShare[count].payment){
-            restHolder = fullShare - share;
-          }
-          restHolder = fullShare - lootEvent.inicialPayments[count].value - partShare[count].part;
-        }else{
-          restHolder = fullShare - partShare[count].part; 
-        }
-       
-        over.forEach(item2 => {
-          if(item2.status){
-            var debt = lootEvent.debt;
-            var idHolder = item.id;
-            var index = debt.findIndex(function (item) {
-              //console.log('Item id :'+idHolder, 'Item2 id :'+item2.id);
-             if(idHolder != item2.id)
-              return item.idOwner == item2.id  && item.idTarget ==  idHolder ;
-            });
-           lootEvent.debt[index].value = (restHolder * item2.part) ;//
-           //console.log("DEBT",lootEvent.debt[index].value, lastLootEvent.debt[index].value, idHolder);
-           lootEvent.debt[index].value += lastLootEvent.debt[index].value;
-          }else{
-            var debt = lastLootEvent.debt;
-            var idHolder = item.id;
-            //console.log("DEBT",idHolder ,item2.id);
-            if(idHolder != item2.id){
-              var index = debt.findIndex(function (item) {
-                //console.log('Item id :'+idHolder, 'Item2 id :'+item2.id);
-               if(idHolder != item2.id)
-                return item.idOwner == idHolder   && item.idTarget ==  item2.id;
-              });
-              
-             
-             lootEvent.debt[index].value += lastLootEvent.debt[index].value;
-            }
-            
-          }
-       })
-      }else{
-       
-      }
-      count++;
-      
-    })
-  }
-
-  function setFinalPay(lootEvent, over, share, partShare){
-
-    
-      let count  = 0 ;
-      lootEvent.finalPayments.forEach(finalPayment => {
-        if(!over[finalPayment.idPlayer].status){
-          var id = finalPayment.idPlayer ;
-          finalPayment.value += partShare[id].part; 
-          //console.log(finalPayment.value , finalPayment.idPlayer, partShare[finalPayment.idPlayer].part);          
-        }    
-        else{
-          finalPayment.value = over[finalPayment.idPlayer].value;
-        }
-        count++;  
-      })
-      if(lootEvent.finalPayments[0].idPlayer == 0){
-        lootEvent.finalPayments[0].value = over[0].value;
-
-        //console.log(partShare[0].part);
-        //console.log(JSON.stringify(partShare));
-        //console.table(partShare);
-        //console.table(lootEvent.finalPayments);
-      }
-
-  }
-
-
-
-
 
   function getTotal(){
 
@@ -492,3 +625,41 @@ function myFunction() {
   function teste(){
     alert("teste");
   }
+
+  
+
+    //let total = getTotal();
+
+    /*
+    if(total <= 0){
+      alert("Erro");
+    }else{
+      let share = total / 4;
+      //console.log(mydata);
+      for (var index = mydata.players.length; index > 0; index--) {
+        //console.log(index);      
+        let row = document.getElementById("tr"+index);
+        for (let index = 0; index < mydata.players.length; index++) {
+          let cell = row.insertCell(2);
+          cell.setAttribute("class","headerStyle");
+          cell.setAttribute("ondblclick","teste()")
+          cell.innerHTML = mydata.players[index].name;
+          cell.setAttribute("id","head")
+        }  
+      }
+
+      let table = document.getElementById("rowTbody");
+      for (let index = 0; index < 1; index++) {
+        let row = table.insertRow(0);
+        row.setAttribute("class"," rowTableTr flex-no wrap");  
+        row.setAttribute("id","row"+index);
+        for (let index = 0; index < mydata.players.length; index++) {
+          let cell2 = row.insertCell(0);
+          cell2.setAttribute("class"," rowTableTd");  
+          cell2.innerHTML = share;
+          
+        }
+      }
+  
+    }
+    */
