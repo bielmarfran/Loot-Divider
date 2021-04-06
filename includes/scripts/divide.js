@@ -8,12 +8,10 @@ let db = new Localbase('db');
 
 document.addEventListener('DOMContentLoaded', async function() {    
     var table = document.getElementById("tableLoot");
+
+    await getPlayer();
+    await getLootEvents();
     
-    getLootEvents();
-    getPlayer();
-   
-    //const loot = new Loot('01','500');
-    //console.log(loot);
 
 }, false);
 
@@ -131,35 +129,23 @@ function myFunction() {
 
     if(lootEvents.length > 0){
       partShare.forEach(item => {
-        //while(item.part == 0 && item.ExtraPay > 0){
           pay(item, lootEvent , lastLootEvent, partShare, over);
-        //}
+
         
       })
       console.log("-----------------------");
       partShare.forEach(item => {
-        //while(item.part == 0 && item.ExtraPay > 0){
           pay2(item, lootEvent , lastLootEvent, partShare, over);
-        //}
         
       })
 
       partOfDebt(over);
-      /*
-      partShare.forEach(item => {
-        //while(item.part == 0 && item.ExtraPay > 0){
-          pay(item, lootEvent , lastLootEvent, partShare, over);
-        //}
-        
-      })*/
-      
-      //console.log(lastLootEvent);
     }
 
     
     //console.log(JSON.stringify(lootEvent.debt));
     //console.log(lootEvent.debt);
-    console.table(partShare)
+    //console.table(partShare)
     //console.table(lootEvent.debt);
     //console.table(over);
     
@@ -167,21 +153,18 @@ function myFunction() {
 
     setFinalPay(lootEvent, over, partShare, lastLootEvent);
 
-    console.table(lootEvent.finalPayments);
+
+    showAllData(lootEvents);
 
 
-    //setDebt(lootEvent, over, share, fullShare, partShare, lastLootEvent )
 
-
-    //db.collection('lootEvent').add({
-    // lootEvent
-    //})
-    
+    /*
+    db.collection('lootEvent').add({
+     lootEvent
+    })
+    */
     //lootEvents.push(lootEvent);
 
-    //console.table((lootEvent.finalPayments));
-    console.log(lootEvent);
-    
 
   }
 
@@ -554,24 +537,7 @@ function myFunction() {
     return partShare;
   }
 
-  function getTotal(){
 
-    var total = 0;
-
-      total += (getValue('platinium')*10);
-      total += getValue('gold');
-      total += (getValue('electron')/2);
-      total += (getValue('silver')/10);
-      total += (getValue('copper')/100);
-      //Divide Itens value by 2
-      total += (getValue('itens')/2);
-  
-
-  
-    console.log(total)
-    return total
-    //alert(total)
-  }
 
  function formatReturn(value){
 
@@ -582,16 +548,7 @@ function myFunction() {
    return  returnValue;
  }
 
-  function getValue(id){
 
-    var value = parseFloat(document.getElementById(id).value);
-    console.log(value)
-    if ( isNaN(value)) {
-      return 0
-    } else {
-      return value
-    }
-  }
 
   function getGold(value){
 
@@ -622,44 +579,80 @@ function myFunction() {
 
   }
 
-  function teste(){
-    alert("teste");
+
+
+  function setHeaders(event, position){
+    let table = document.getElementById("tHead");
+    let row = table.insertRow(position);
+    row.setAttribute("class","flex-no wrap headerTableSize");     
+    row.setAttribute("id","tr"+position);
+
+    //let row = document.getElementById("tr"+position);//+index
+
+    let cellLootName = row.insertCell(0);
+    cellLootName.setAttribute("class","headerStyle");
+    cellLootName.setAttribute("ondblclick","teste()")
+    cellLootName.innerHTML = "Loot Name";
+
+    let cellLootValue = row.insertCell(1);
+    cellLootValue.setAttribute("class"," headerStyle");  
+    cellLootName.setAttribute("ondblclick","teste()")
+    cellLootValue.innerHTML = "Loot Value";
+
+   
+    for (let index = 0; index < event.lootEvent.players.length; index++) {
+      let cell = row.insertCell(2);
+      cell.setAttribute("class","headerStyle");
+      cell.setAttribute("ondblclick","teste()")
+      cell.innerHTML = event.lootEvent.players[index].name;
+      cell.setAttribute("id","head")
+    }     
+    
+
   }
 
+  function setRows(event, position){
+
+    let table = document.getElementById("rowTbody");
+
+    let row = table.insertRow(position);
+    row.setAttribute("class"," rowTableTr flex-no wrap");     
+    row.setAttribute("id","row"+position);
+
+    console.log(event.lootEvent);
+
+    let cellLootName = row.insertCell(0);
+    cellLootName.setAttribute("class"," rowTableTd");  
+    cellLootName.innerHTML = event.lootEvent.loot.name;
+
+    let cellLootValue = row.insertCell(1);
+    cellLootValue.setAttribute("class"," rowTableTd");  
+    cellLootValue.innerHTML =  formatReturn(event.lootEvent.loot.value);
+
+    for (let index = 0; index < event.lootEvent.players.length; index++) {
+      let cell2 = row.insertCell(2);
+      
+      if(event.lootEvent.finalPayments[index].value < 0 ){
+        cell2.setAttribute("class"," rowTableTdNegative");  
+      }else{
+        cell2.setAttribute("class"," rowTableTd");  
+      }
+      cell2.innerHTML = formatReturn(event.lootEvent.finalPayments[index].value) ;
+      
+    }
+  }   
   
+    
+  function showAllData(lootEvents){
+    lootEvents.forEach((event, index) => {
+      setHeaders(event, index);
+      setRows(event, index);
+    })
+
+  }
 
     //let total = getTotal();
 
     /*
-    if(total <= 0){
-      alert("Erro");
-    }else{
-      let share = total / 4;
-      //console.log(mydata);
-      for (var index = mydata.players.length; index > 0; index--) {
-        //console.log(index);      
-        let row = document.getElementById("tr"+index);
-        for (let index = 0; index < mydata.players.length; index++) {
-          let cell = row.insertCell(2);
-          cell.setAttribute("class","headerStyle");
-          cell.setAttribute("ondblclick","teste()")
-          cell.innerHTML = mydata.players[index].name;
-          cell.setAttribute("id","head")
-        }  
-      }
-
-      let table = document.getElementById("rowTbody");
-      for (let index = 0; index < 1; index++) {
-        let row = table.insertRow(0);
-        row.setAttribute("class"," rowTableTr flex-no wrap");  
-        row.setAttribute("id","row"+index);
-        for (let index = 0; index < mydata.players.length; index++) {
-          let cell2 = row.insertCell(0);
-          cell2.setAttribute("class"," rowTableTd");  
-          cell2.innerHTML = share;
-          
-        }
-      }
-  
-    }
+   
     */

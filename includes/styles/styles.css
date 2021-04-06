@@ -14,19 +14,7 @@
 }
 
 
-.headerTableSize4{
-    @apply bg-gray-800 flex flex-col  sm:table-row rounded-l-lg sm:rounded-none mb-2 sm:mb-0;
-}
-
-.headerTableSize3{
-    @apply bg-gray-800 flex flex-col sm:table-row rounded-l-lg sm:rounded-none mb-2 sm:mb-0;
-}
-
-.headerTableSize2{
-    @apply bg-gray-800 flex flex-col  sm:table-row rounded-l-lg sm:rounded-none mb-2 sm:mb-0;
-}
-
-.headerTableSize1{
+.headerTableSize{
     @apply bg-gray-800 flex flex-col  sm:table-row rounded-l-lg sm:rounded-none mb-2 sm:mb-0;
 }
 
@@ -37,6 +25,11 @@
 .rowTableTr{
     @apply flex flex-col sm:table-row mb-2 sm:mb-0;
 }
+
 .rowTableTd{
     @apply  border hover:bg-gray-200 p-3 truncate;
+}
+
+.rowTableTdNegative{
+    @apply  border hover:bg-gray-200 p-3 truncate text-red-400;
 }
