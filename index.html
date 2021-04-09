@@ -8,13 +8,12 @@
     <script src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.x.x/dist/alpine.min.js" defer></script>
     <script type="text/javascript" src="players.json"></script>
     <script type="text/javascript" src="lootEvent.json"></script>
-    <script  type="module" src="./includes/scripts/divide.js"></script>  
+    <script  type="text/javascript" src="./includes/scripts/divide.js"></script>  
     <script  type="module" src="./includes/scripts/Loot.js"></script>  
     <script  type="module" src="./includes/scripts/Debt.js"></script>
     <script  type="module" src="./includes/scripts/LootEvent.js"></script>
-    <script  type="text/javascript" src="./includes/scripts/Auxiliary.js"></script>
+    <script  type="text/javascript" src="./includes/scripts/createLoot.js"></script>
     <script src="https://unpkg.com/localbase/dist/localbase.dev.js"></script>
-
     <style>
       html,
       body {
@@ -40,7 +39,7 @@
       }
     </style>
 </head>
-<body class="bg-gray-100" x-data="{ showModal1: false, showModal2: false}" :class="{'overflow-y-hidden': showModal1 || showModal2 }">
+<body class="bg-gray-100">
   <div class="flex flex-col h-screen bg-gray-100">
     <!-- Auth Card Container -->
     <div class="grid place-items-center mx-2 my-20 sm:my-auto sm:rounded-lg"> 
@@ -48,48 +47,48 @@
         <form class="w-11/12  m-4 pr-2 py-5 sm:pl-10">
           <div class="flex flex-wrap -mx-3 mb-6">
             <div class="w-full md:w-full px-3 mb-6 md:mb-0">
-              <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="grid-first-name">
+              <label class="labelInput" for="grid-first-name" >
                 Nome do Loot
               </label>
-              <input class="appearance-none block w-full bg-gray-200 text-gray-700 border border-red-500 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white" id="grid-first-name" type="text" placeholder="Jane">
+              <input  class="appearance-none block w-full bg-gray-200 text-gray-700 border border-red-500 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white" id="grid-first-name" type="text" placeholder="Jane" value="Loot">
             </div>
           </div>  
          
           <div class="flex flex-wrap -mx-3 mb-2">
             <div class="w-full md:w-1/3 px-3 mb-6 md:mb-0">
-              <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="platinium">
+              <label class="labelInput" for="platinium">
                 Platina             
               </label>
-              <input class="inputIndex" id="platinium" type="number" placeholder="pp">
+              <input class="inputIndex" id="platinium" type="number" min="1" step="1" pattern="\d+"  placeholder="pp">
             </div>
             <div class="w-full md:w-1/3 px-3 mb-6 md:mb-0">
-              <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="gold">
+              <label class="labelInput" for="gold">
                 Gold             
               </label>
               <input class="inputIndex" id="gold" type="number" placeholder="gp">
             </div>
             <div class="w-full md:w-1/3 px-3 mb-6 md:mb-0">
-              <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="electron">
+              <label class="labelInput" for="electron">
                 Electron             
               </label>
-              <input class="inputIndex" id="electron" type="number" placeholder="ep">
+              <input class="inputIndex" id="electron" type="number"  placeholder="ep">
             </div>
           </div>
           <div class="flex flex-wrap -mx-3 mb-2">
             <div class="w-full md:w-1/3 px-3 mb-6 md:mb-0">
-              <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="silver">
+              <label class="labelInput" for="silver">
                 Silver             
               </label>
               <input class="inputIndex" id="silver" type="number" placeholder="sp">
             </div>
             <div class="w-full md:w-1/3 px-3 mb-6 md:mb-0">
-              <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="copper">
+              <label class="labelInput" for="copper">
                 Copper             
               </label>
               <input class="inputIndex" id="copper" type="number" placeholder="cp">
             </div>
             <div class="w-full md:w-1/3 px-3 mb-6 md:mb-0">
-              <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="itens">
+              <label class="labelInput" for="itens">
                 Itens  (Gold)           
               </label>
               <input class="inputIndex" id="itens" type="number" placeholder="gp">
@@ -99,24 +98,20 @@
           <!------------------------------------------------>
           <div class="flex flex-wrap -mx-3 mb-6">
             <div class="w-full md:w-full px-3 mb-6 md:mb-0">
-              <button id="Login"  onclick="getValues();" type="button"
+              <button id="Login"  onclick="openModal('mymodalcentered')" type="button"
               class="w-full py-3 mt-10 bg-gray-800 rounded-lg
               font-medium text-white uppercase  
-              focus:outline-none hover:bg-gray-700 hover:shadow-none"  @click="showModal2 = true">
+              focus:outline-none hover:bg-gray-700 hover:shadow-none">
               Dividir
           </button>
             </div>
           </div>  
-          <button type="button" onclick="">Try it</button>
-          <button class="bg-gray-700 font-semibold text-white p-2 w-32 rounded-full hover:bg-gray-700 focus:outline-none focus:ring shadow-lg hover:shadow-none transition-all duration-300 m-2"
-            @click="showModal1 = true" type="button">
-            Click here
-        </button>
+        
         <button
-        class="bg-green-600 font-semibold text-white p-2 w-32 rounded-full hover:bg-green-700 focus:outline-none focus:ring shadow-lg hover:shadow-none transition-all duration-300 m-2"
-        @click="showModal2 = true" type="button"
-      >
-        Click here
+         class="bg-green-600 font-semibold text-white p-2 w-32 rounded-md hover:bg-green-700 "
+         onclick="openModal('mymodalcentered2')" type="button"
+        >
+        Adicionar Novo Jogador
       </button>
         </form>
 
@@ -135,119 +130,76 @@
   </div>
  </div>
 
-<!-- Modal1 -->
-<div
-class="fixed inset-0 w-full h-full z-20 bg-black bg-opacity-50 duration-300 overflow-y-auto"
-x-show="showModal1"
-x-transition:enter="transition duration-300"
-x-transition:enter-start="opacity-0"
-x-transition:enter-end="opacity-100"
-x-transition:leave="transition duration-300"
-x-transition:leave-start="opacity-100"
-x-transition:leave-end="opacity-0"
->
-<div class="relative sm:w-3/4 md:w-1/2 lg:w-1/3 mx-2 sm:mx-auto my-10 opacity-100">
-  <div
-    class="relative bg-white shadow-lg rounded-md text-gray-900 z-20"
-    @click.away="showModal1 = false"
-    x-show="showModal1"
-    x-transition:enter="transition transform duration-300"
-    x-transition:enter-start="scale-0"
-    x-transition:enter-end="scale-100"
-    x-transition:leave="transition transform duration-300"
-    x-transition:leave-start="scale-100"
-    x-transition:leave-end="scale-0"
-  >
-    <header class="flex items-center justify-between p-2">
-      <h2 class="font-semibold">Header</h2>
-      <button class="focus:outline-none p-2" @click="showModal1 = false">
-        <svg class="fill-current" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 18 18">
-          <path
-            d="M14.53 4.53l-1.06-1.06L9 7.94 4.53 3.47 3.47 4.53 7.94 9l-4.47 4.47 1.06 1.06L9 10.06l4.47 4.47 1.06-1.06L10.06 9z"
-          ></path>
-        </svg>
-      </button>
-    </header>
-    <main class="p-2 text-center">
-      <p>
-        Lorem ipsum dolor sit amet consectetur adipisicing elit. Veniam voluptatem, optio dolorem accusantium fuga
-        molestias nobis sequi autem ducimus laudantium beatae amet earum, quia reiciendis corporis animi modi
-        pariatur impedit!
-      </p>
-    </main>
-    <footer class="flex justify-center p-2">
-      <button
-        class="bg-red-600 font-semibold text-white p-2 w-32 rounded-full hover:bg-red-700 focus:outline-none focus:ring shadow-lg hover:shadow-none transition-all duration-300"
-        @click="showModal1 = false"
-      >
-        Go back
-      </button>
-    </footer>
-  </div>
-</div>
-</div>        
-  
-      <!-- Modal2 -->
-      <div
-        class="fixed inset-0 w-full h-full z-20 bg-black bg-opacity-50 duration-300 overflow-y-auto"
-        x-show="showModal2"
-        x-transition:enter="transition duration-300"
-        x-transition:enter-start="opacity-0"
-        x-transition:enter-end="opacity-100"
-        x-transition:leave="transition duration-300"
-        x-transition:leave-start="opacity-100"
-        x-transition:leave-end="opacity-0"
-      >
-        <div class="relative sm:w-3/4 md:w-1/2 lg:w-1/3 mx-2 sm:mx-auto my-10 opacity-100">
-          <div
-            class="relative bg-white shadow-lg rounded-lg text-gray-900 z-20"
-            @click.away="showModal2 = false"
-            x-show="showModal2"
-            x-transition:enter="transition transform duration-300"
-            x-transition:enter-start="scale-0"
-            x-transition:enter-end="scale-100"
-            x-transition:leave="transition transform duration-300"
-            x-transition:leave-start="scale-100"
-            x-transition:leave-end="scale-0"
-          >
-          <header class="flex flex-col justify-center items-center p-3 text-gray-600">
+
+      <dialog id="mymodalcentered" class="bg-transparent z-0 relative w-screen h-screen">
+        <div class="p-7 flex justify-center items-center fixed left-0 top-0 w-full h-full bg-gray-900 bg-opacity-50 z-50 transition-opacity duration-300 opacity-0">
+            <div class="bg-white flex rounded-lg w-1/2 relative">
+               <div class="flex flex-col ">
+                    <div class="p-7 flex items-center w-full">
+                        <div class="text-gray-900 font-bold text-lg">Divisao Loot</div>
+                        <svg onclick="modalClose('mymodalcentered')" class="ml-auto fill-current text-gray-700 w-5 h-5 cursor-pointer" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 18 18">
+                            <path d="M14.53 4.53l-1.06-1.06L9 7.94 4.53 3.47 3.47 4.53 7.94 9l-4.47 4.47 1.06 1.06L9 10.06l4.47 4.47 1.06-1.06L10.06 9z" />
+                        </svg>
+                    </div>
+    
+                    <div class="px-7 overflow-x-hidden overflow-y-auto" style="max-height: 40vh;">
+                      <header class="flex flex-col justify-center items-center p-3 text-gray-600">
            
-            <h2 class="font-semibold text-2xl">Loot</h2>
-            <h2 class="font-semibold text-2xl">500</h2>
-          </header>
-            <main class="p-3 text-center">
-              <div class="flex flex-wrap -mx-3 mb-2">
-                <div class="w-full md:w-1/3 px-3 mb-6 md:mb-0">
-                  <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="platinium">
-                    01234567890123456789             
-                  </label>
-                  <input class="inputIndex" id="platinium" type="number" placeholder="pp">
+                        <h2 class="font-semibold text-2xl" id="lootName"></h2>
+                        <h2 class="font-semibold text-2xl" id="lootValue"></h2>#
+                      </header>
+                        <main class="p-3 text-center" id="mainModal2">
+                          
+                         
+                        </main>
+                    </div>
+                    
+                    <div class="p-7 flex justify-end items-center w-full">
+                        <button type="button" onclick="cleanEvent('mymodalcentered')" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mr-3">
+                            Ok
+                        </button>
+                        <button type="button"  onclick="modalClose('mymodalcentered')" class="bg-transparent hover:bg-gray-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded">
+                            Close
+                        </button>
+                    </div>
                 </div>
-                <div class="w-full md:w-1/3 px-3 mb-6 md:mb-0">
-                  <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="gold">
-                    Gold             
-                  </label>
-                  <input class="inputIndex" id="gold" type="number" placeholder="gp">
-                </div>
-                <div class="w-full md:w-1/3 px-3 mb-6 md:mb-0">
-                  <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="electron">
-                    Electron             
-                  </label>
-                  <input class="inputIndex" id="electron" type="number" placeholder="ep">
-                </div>
-              </div>
-             
-            </main>
-            <footer class="flex justify-center bg-transparent">
-              <button
-                class="bg-green-600 font-semibold text-white py-3 w-full rounded-b-md hover:bg-green-700 focus:outline-none focus:ring shadow-lg hover:shadow-none transition-all duration-300"
-                @click="showModal2 = false"
-              >
-                Confirmar
-              </button>
-            </footer>
-          </div>
+            </div>
         </div>
+    </dialog>
+
+    <dialog id="mymodalcentered2" class="bg-transparent z-0 relative w-screen h-screen">
+      <div class="p-7 flex justify-center items-center fixed left-0 top-0 w-full h-full bg-gray-900 bg-opacity-50 z-50 transition-opacity duration-300 opacity-0">
+        <div class="md:w-1/3 sm:w-full rounded-lg shadow-lg bg-white my-3">
+          <div class="flex justify-between border-b border-gray-100 px-5 py-4">
+            <div>
+                <i class="fa fa-exclamation-triangle text-orange-500"></i>
+                <span class="font-bold text-gray-700 text-lg">Adicionar Jogador</span>
+              </div>
+              <div>
+                <button><i class="fa fa-times-circle text-red-500 hover:text-red-600 transition duration-150"></i></button>
+              </div>
+          </div>
+          <div class="w-full p-3  md:mb-0">
+            <label class="labelInput" for="platinium">
+              Nome             
+            </label>
+            <input class="inputIndex" id="textBoxPlayerName" type="text"  placeholder="Player">
+          </div>
+
+        
+          <div class="px-5 py-4 flex justify-end">
+            <button type="button" onclick="addPlayer('mymodalcentered2')" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mr-3">
+              Ok
+            </button>
+            <button type="button"  onclick="modalClose('mymodalcentered2')" class="bg-transparent hover:bg-gray-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded">
+                Close
+            </button>
+          </div>
+    </div>
+          
       </div>
+  </dialog>
+
+  
 </body>
 </html>
