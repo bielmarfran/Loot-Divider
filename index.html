@@ -13,6 +13,7 @@
     <script  type="module" src="./includes/scripts/Debt.js"></script>
     <script  type="module" src="./includes/scripts/LootEvent.js"></script>
     <script  type="text/javascript" src="./includes/scripts/createLoot.js"></script>
+    <script  type="text/javascript" src="./includes/scripts/crudOperation.js"></script>
     <script src="https://unpkg.com/localbase/dist/localbase.dev.js"></script>
     <style>
       html,
@@ -106,13 +107,19 @@
           </button>
             </div>
           </div>  
-        
-        <button
-         class="bg-green-600 font-semibold text-white p-2 w-32 rounded-md hover:bg-green-700 "
-         onclick="openModal('mymodalcentered2')" type="button"
-        >
-          Adicionar Novo Jogador
-         </button>
+        <div class="flex justify-evenly">
+          <div>
+            <button class="bg-green-600 font-semibold text-white p-2 w-32 rounded-md hover:bg-green-700" onclick="openModal('mymodalcentered2')" type="button">
+              Adicionar Novo Jogador
+            </button>
+          </div>
+          <div>
+            <button class="bg-red-400 font-semibold text-white p-2 w-32 rounded-md hover:bg-red-600" onclick="deleteLastLoot()" type="button">
+              Remove Ultimo Loot
+            </button>
+        </div>
+        </div>
+       
         </form>
 
       </div>

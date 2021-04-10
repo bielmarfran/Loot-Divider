@@ -7,10 +7,15 @@ var updatePlayerName;
 document.addEventListener('DOMContentLoaded', async function() {    
     var table = document.getElementById("tableLoot");
 
-    await createTable();
-    myFunction();
+    await refresh();
 
 }, false);
+
+async function refresh(){
+  clearTable();
+  await createTable();
+  myFunction();
+}
 
 async function createTable(){
   //console.log('updateUI')
@@ -20,6 +25,12 @@ async function createTable(){
   
 }
 
+function clearTable(){
+  var tHead = document.getElementById("tHead");
+  tHead.innerHTML = "";
+  var tBody = document.getElementById("rowTbody");
+  tBody.innerHTML = "";
+}
 
 async function updateTable(lootEvent){
   await getPlayer2();
@@ -29,17 +40,6 @@ async function updateTable(lootEvent){
   setRows(lootEvent, lootEvent.id);
 }
 
-async function updateTable2(lootEvent){
-  await getPlayer2();
-  var tHead = document.getElementById("tHead");
-  tHead.innerHTML = "";
-  var tBody = document.getElementById("rowTbody");
-  tBody.innerHTML = "";
-  
-  setHeaders(lootEvent, lootEvent.id);
-  setRows(lootEvent, lootEvent.id);
-
-}
 
  async function getPlayer2(){
     let db = new Localbase('db');
@@ -80,6 +80,7 @@ async function updateTable2(lootEvent){
 
   async function getLootEvents2(){
     let db = new Localbase('db');
+    lootEvents = [];
     await db.collection('lootEvent').get().then(lootEvent2 => {
       if(lootEvent2.length > 0){
         //console.log(lootEvent2);
@@ -143,8 +144,7 @@ async function updateTable2(lootEvent){
           events.push(item)
         })
       }else{
-        var tHead = document.getElementById("tHead");
-        tHead.innerHTML = "";
+
         setHeaders();
       }
   })
@@ -179,7 +179,7 @@ async function updateTable2(lootEvent){
       finalPayments:event.finalPayments,
       debt:event.debt,
     })
-    updateTable2(event);
+    refresh();
   })
 
   }
@@ -253,6 +253,9 @@ async function updateTable2(lootEvent){
 
   function setHeaders(event, position){
     //console.log(event)
+    var tHead = document.getElementById("tHead");
+    tHead.innerHTML = "";
+
     const body = document.body;
     let table = document.getElementById("tHead");
 
@@ -286,6 +289,8 @@ async function updateTable2(lootEvent){
 
   function setHeaders(){
     console.log('setHeaders 2')
+    var tHead = document.getElementById("tHead");
+    tHead.innerHTML = "";
     const body = document.body;
     let table = document.getElementById("tHead");
 
@@ -371,9 +376,4 @@ async function updateTable2(lootEvent){
 
   }
 
-    //let total = getTotal();
-
-    /*
-   
-    */
 
