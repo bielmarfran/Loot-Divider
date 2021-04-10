@@ -40,7 +40,7 @@ async function updateTable2(lootEvent){
 
 }
 
-async function getPlayer2(){
+ async function getPlayer2(){
     let db = new Localbase('db');
     console.log('getPlayer Divide')
     await db.collection('players').get().then(users => {
@@ -248,18 +248,19 @@ async function getPlayer2(){
     row.setAttribute("id","tr"+event.id);
 
 
-
-    let cellLootName = row.insertCell(0);
+    const body = document.body;
+    const cellLootName = document.createElement("th"); 
     cellLootName.setAttribute("class","headerStyle");
     cellLootName.innerHTML = "Loot Name";
+    body.querySelector(`#tr${event.id}`).appendChild(cellLootName);
 
-    let cellLootValue = row.insertCell(1);
+    const cellLootValue = document.createElement("th"); 
     cellLootValue.setAttribute("class","headerStyle");  
     cellLootValue.innerHTML = "Loot Value";
-
+    body.querySelector(`#tr${event.id}`).appendChild(cellLootValue);
    
     for (let index = 0; index < event.totalPlayers; index++) {
-      const body = document.body;
+
       const th = document.createElement("th");  
       th.setAttribute("class","headerStyle");
       th.setAttribute("ondblclick",`updatePlayerName('${event.players[index].name}')`)
@@ -303,7 +304,10 @@ async function getPlayer2(){
         cell2.setAttribute("class"," rowTableTdNotActive");  
         cell2.innerHTML = '-';
       }
-     
+           
+      if(index == event.totalPlayers-1){
+        cell2.setAttribute("style",`margin-top:${event.totalPlayers-1}px`);//
+      }
      
       
     }
