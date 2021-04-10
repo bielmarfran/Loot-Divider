@@ -43,7 +43,7 @@
   <div class="flex flex-col h-screen bg-gray-100">
     <!-- Auth Card Container -->
     <div class="grid place-items-center mx-2 my-20 sm:my-auto sm:rounded-lg"> 
-      <div class="w-7/12  bg-white rounded-lg shadow-lg mb-10">
+      <div class="w-7/12  bg-white rounded-lg shadow-lg my-10">
         <form class="w-11/12  m-4 pr-2 py-5 sm:pl-10">
           <div class="flex flex-wrap -mx-3 mb-6">
             <div class="w-full md:w-full px-3 mb-6 md:mb-0">
@@ -132,41 +132,43 @@
    </div>
 
 
-      <dialog id="mymodalcentered" class="bg-transparent z-0 relative w-screen h-screen">
-        <div class="p-7 flex justify-center items-center fixed left-0 top-0 w-full h-full bg-gray-900 bg-opacity-50 z-50 transition-opacity duration-300 opacity-0">
-            <div class="bg-white flex rounded-lg w-1/2 relative">
-               <div class="flex flex-col ">
-                    <div class="p-7 flex items-center w-full">
-                        <div class="text-gray-900 font-bold text-lg">Divisao Loot</div>
-                        <svg onclick="modalClose('mymodalcentered')" class="ml-auto fill-current text-gray-700 w-5 h-5 cursor-pointer" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 18 18">
-                            <path d="M14.53 4.53l-1.06-1.06L9 7.94 4.53 3.47 3.47 4.53 7.94 9l-4.47 4.47 1.06 1.06L9 10.06l4.47 4.47 1.06-1.06L10.06 9z" />
-                        </svg>
-                    </div>
-    
-                    <div class="px-7 overflow-x-hidden overflow-y-auto" style="max-height: 40vh;">
-                      <header class="flex flex-col justify-center items-center p-3 text-gray-600">
-           
-                        <h2 class="font-semibold text-2xl" id="lootName"></h2>
-                        <h2 class="font-semibold text-2xl" id="lootValue"></h2>#
-                      </header>
-                        <main class="p-3 text-center" id="mainModal2">
-                          
-                         
-                        </main>
-                    </div>
-                    
-                    <div class="p-7 flex justify-end items-center w-full">
-                        <button type="button" onclick="cleanEvent('mymodalcentered')" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mr-3">
-                            Ok
-                        </button>
-                        <button type="button"  onclick="modalClose('mymodalcentered')" class="bg-transparent hover:bg-gray-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded">
-                            Close
-                        </button>
-                    </div>
-                </div>
+   <dialog id="mymodalcentered" class="bg-transparent z-0 relative w-screen h-screen">
+    <div class="p-7 flex justify-center items-center fixed left-0 top-0 w-full h-full bg-gray-900 bg-opacity-50 z-50 transition-opacity duration-300 opacity-0">
+      <div class="md:w-2/3 sm:w-full rounded-lg shadow-lg bg-white my-3">
+        <div class="flex justify-between border-b border-gray-100 px-5 py-4">
+          <div>
+              <i class="fa fa-exclamation-triangle text-orange-500"></i>
+              <span class="font-bold text-gray-700 text-lg">Loot</span>
+            </div>
+            <div>
+              <button><i class="fa fa-times-circle text-red-500 hover:text-red-600 transition duration-150"></i></button>
             </div>
         </div>
-    </dialog>
+        <div class="px-7 overflow-x-hidden overflow-y-auto" style="max-height: 40vh;">
+          <header class="flex flex-col justify-center items-center p-3 text-gray-600">
+
+            <h2 class="font-semibold text-2xl" id="lootName"></h2>
+            <h2 class="font-semibold text-2xl" id="lootValue"></h2>#
+          </header>
+            <main class="p-3 text-center" id="mainModal2">
+              
+             
+            </main>
+        </div>
+
+      
+        <div class="px-5 py-4 flex justify-end">
+          <button type="button" onclick="cleanEvent('mymodalcentered')" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mr-3">
+            Ok
+          </button>
+          <button type="button"  onclick="modalClose('mymodalcentered')" class="bg-transparent hover:bg-gray-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded">
+              Close
+          </button>
+        </div>
+  </div>
+        
+    </div>
+</dialog>
 
     <dialog id="mymodalcentered2" class="bg-transparent z-0 relative w-screen h-screen">
       <div class="p-7 flex justify-center items-center fixed left-0 top-0 w-full h-full bg-gray-900 bg-opacity-50 z-50 transition-opacity duration-300 opacity-0">
@@ -184,7 +186,7 @@
             <label class="labelInput" for="platinium">
               Nome             
             </label>
-            <input class="inputIndex" id="textBoxPlayerName" type="text"  placeholder="Player">
+            <input class="inputIndex" id="textBoxPlayerName" type="text"  placeholder="Player" >
           </div>
 
         

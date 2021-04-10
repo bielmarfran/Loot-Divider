@@ -22,10 +22,22 @@ async function createTable(){
 
 
 async function updateTable(lootEvent){
+  await getPlayer2();
   if( lootEvent.id == 0){
     setHeaders(lootEvent, lootEvent.id);
   }
   setRows(lootEvent, lootEvent.id);
+}
+
+async function updateTable2(lootEvent){
+  await getPlayer2();
+  var tHead = document.getElementById("tHead");
+  tHead.innerHTML = "";
+  var tBody = document.getElementById("rowTbody");
+  tBody.innerHTML = "";
+  setHeaders(lootEvent, lootEvent.id);
+  setRows(lootEvent, lootEvent.id);
+
 }
 
 async function getPlayer2(){
@@ -35,17 +47,21 @@ async function getPlayer2(){
       if(users.length == 0){
         db.collection('players').add({
           id: 0,
-          name: 'Elator',
+          name: 'Player 1',
+          active: true ,
         })
         db.collection('players').add({
           id: 1,
-          name: 'Platey',
+          name: 'Player 2',
+          active: true ,
         })
+        /*
         db.collection('players').add({
           id: 2,
           name: 'Gabriel',
+          alive: true ,
         })
-        /*db.collection('players').add({
+        db.collection('players').add({
           id: 3,
           name: 'Julio',
         })*/
@@ -69,23 +85,94 @@ async function getPlayer2(){
     })
   }
 
+
   function addPlayer(){
     let db = new Localbase('db');
     var playerName = document.getElementById("textBoxPlayerName").value;
-    if(updatePlayerName.status){
-      db.collection('players').doc({ name: updatePlayerName.name}).update({
-        name: playerName,
-      })
+    var index = players.findIndex(element => element.name == playerName);
+    console.log(index);
+    var t = playerName.trim();
+    if(!!playerName && t.length > 0){
+      if(index == -1){
+        if(updatePlayerName.status){
+          db.collection('players').doc({ name: updatePlayerName.name}).update({
+            name: playerName,
+          })
+          updatePlayerName = false;
+        }else{
+          var size;
+          if(players.length == 0){
+            size = 2;
+          }else{
+            size = players.length;
+          }
+          db.collection('players').add({
+            id: size,
+            name: playerName,
+            active: true ,
+          })
+          getPlayer2();
+          insertPlayerOldEvents(players.length, playerName);
+          modalClose('mymodalcentered2');
+        }
+      }else{
+        window.alert("Os nomes devem unicos");
+        document.getElementById("textBoxPlayerName").value = "";
+        document.getElementById("textBoxPlayerName").focus();
+      }
     }else{
-    
-      db.collection('players').add({
-        id: players.length,
-        name: playerName,
-      })
+      window.alert("Nome vazio");
+      document.getElementById("textBoxPlayerName").focus();
     }
+  }
 
+ async function insertPlayerOldEvents(id, name){
+  var events = [];
+  let db = new Localbase('db');
+  await db.collection('lootEvent').get().then(lootEvent2 => {
+      if(lootEvent2.length > 0){
+        lootEvent2.forEach( item => {
+          events.push(item)
+        })
+      }
+  })
+  events.forEach( event => {
+   event.totalPlayers ++;
+   event.players.push({id: id,name:name, active:false})
+   event.inicialPayments.push({idPlayer: id, value:0})
+   event.finalPayments.push({idPlayer: id, value:0})
+    var oldDebt = JSON.parse(JSON.stringify(events[0].debt));
+    console.log(oldDebt);
+   event.debt = [];
+    for (let index = 0; index <event.players.length; index++) {
+      for (let index2 = 0; index2 <event.players.length; index2++) {
+        if(index != index2){
+           event.debt.push({idOwner:index, idTarget:index2, value: 0})
+          }     
+      } 
+    }
+    oldDebt.forEach(item => {
+      var index =event.debt.findIndex(function (item2) {
+        //if(idHolder != item2.id)
+         return item.idOwner == item2.idOwner  && item.idTarget ==  item2.idTarget ;
+       });
+      event.debt[index].value = item.value;
+
+    })
+    console.log(events);
+    db.collection('lootEvent').doc({ id: event.id}).update({
+      totalPlayers:event.totalPlayers,
+      players:event.players,
+      inicialPayments:event.inicialPayments,
+      finalPayments:event.finalPayments,
+      debt:event.debt,
+    })
+    updateTable2(event);
+  })
 
   }
+
+
   function updatePlayerName(name){
     console.log(name);
     updatePlayerName = { status:true, name:name};
@@ -205,13 +292,19 @@ async function getPlayer2(){
 
     for (let index = 0; index < event.totalPlayers ; index++) {
       let cell2 = row.insertCell(index+2);
-      
-      if(event.finalPayments[index].value < 0 ){
-        cell2.setAttribute("class"," rowTableTdNegative");  
+      if(event.players[index].active){
+        if(event.finalPayments[index].value < 0 ){
+          cell2.setAttribute("class"," rowTableTdNegative");  
+        }else{
+          cell2.setAttribute("class"," rowTableTd");  
+        }
+        cell2.innerHTML = formatReturn(event.finalPayments[index].value) ;
       }else{
-        cell2.setAttribute("class"," rowTableTd");  
+        cell2.setAttribute("class"," rowTableTdNotActive");  
+        cell2.innerHTML = '-';
       }
-      cell2.innerHTML = formatReturn(event.finalPayments[index].value) ;
+     
+     
       
     }
   }   

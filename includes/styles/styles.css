@@ -34,6 +34,10 @@
     @apply  border hover:bg-gray-200 p-3 truncate text-red-400;
 }
 
+.rowTableTdNotActive{
+    @apply  border bg-gray-300 p-3 truncate;
+}
+
 .labelInput{
     @apply block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2;
 }

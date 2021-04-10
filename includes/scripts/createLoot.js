@@ -100,19 +100,8 @@ var lootEvents = [];
     for (let index = 0; index < players.length; index++) {
      
       
-      if(index == 0){
-        count = 0;
-        if(!checkExist("div"+index)){
-          const div = document.createElement("div");  
-          div.setAttribute("class","flex flex-wrap -mx-3 mb-2"); 
-          div.setAttribute("id","div"+index)
-
-          body.querySelector("#mainModal2").appendChild(div);
-        }
-        
-
-      }else if(index == 3){
-        count = 3;
+      if(index % 2 == 0){
+        count = index;
         if(!checkExist("div"+index)){
           const div = document.createElement("div");  
           div.setAttribute("class","flex flex-wrap -mx-3 mb-2"); 
@@ -120,21 +109,14 @@ var lootEvents = [];
           body.querySelector('#mainModal2').appendChild(div);
         }
 
-      }else if(index == 6){
-        count = 6;
-        if(!checkExist("div"+index)){
-          const div = document.createElement("div");  
-          div.setAttribute("class","flex flex-wrap -mx-3 mb-2"); 
-          div.setAttribute("id","div"+index); 
-          body.querySelector('#mainModal2').appendChild(div);
-        }
-
       }
-
-      const div2 = document.createElement("div");  
-      div2.setAttribute("class","w-full md:w-1/3 px-3 mb-6 md:mb-0"); 
-      div2.setAttribute("id","div2-"+index); 
-      body.querySelector('#div'+count).appendChild(div2);
+      if(!checkExist("div2-"+index)){
+        const div2 = document.createElement("div");  
+        div2.setAttribute("class","w-full md:w-2/4 px-3 mb-6 md:mb-0"); 
+        div2.setAttribute("id","div2-"+index); 
+        body.querySelector('#div'+count).appendChild(div2);
+      }
+    
 
       if(!checkExist("label"+index)){
         const label = document.createElement("label");  
@@ -167,7 +149,7 @@ var lootEvents = [];
   
   function checkExist(id){
     var exist = !! document.getElementById(id);
-    console.log(exist);
+    console.log(id,exist);
     return exist;
   }
 
