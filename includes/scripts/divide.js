@@ -13,19 +13,19 @@ document.addEventListener('DOMContentLoaded', async function() {
 }, false);
 
 async function createTable(){
-  console.log('updateUI')
+  //console.log('updateUI')
   await getPlayer2();
   await getLootEvents2();
-          
+  setHeaders();
   
 }
 
 
 async function updateTable(lootEvent){
   await getPlayer2();
-  if( lootEvent.id == 0){
-    setHeaders(lootEvent, lootEvent.id);
-  }
+  //if( lootEvent.id == 0){
+  setHeaders(lootEvent, lootEvent.id);
+  //}
   setRows(lootEvent, lootEvent.id);
 }
 
@@ -35,6 +35,7 @@ async function updateTable2(lootEvent){
   tHead.innerHTML = "";
   var tBody = document.getElementById("rowTbody");
   tBody.innerHTML = "";
+  
   setHeaders(lootEvent, lootEvent.id);
   setRows(lootEvent, lootEvent.id);
 
@@ -42,7 +43,7 @@ async function updateTable2(lootEvent){
 
  async function getPlayer2(){
     let db = new Localbase('db');
-    console.log('getPlayer Divide')
+    //console.log('getPlayer Divide')
     await db.collection('players').get().then(users => {
       if(users.length == 0){
         db.collection('players').add({
@@ -55,6 +56,9 @@ async function updateTable2(lootEvent){
           name: 'Player 2',
           active: true ,
         })
+        players.push({id: 0, name: 'Player 1', active: true});
+        players.push({id: 1, name: 'Player 2', active: true});
+
         /*
         db.collection('players').add({
           id: 2,
@@ -65,8 +69,10 @@ async function updateTable2(lootEvent){
           id: 3,
           name: 'Julio',
         })*/
+
       }else{
         players = users;
+        
       }
     })
     
@@ -76,7 +82,7 @@ async function updateTable2(lootEvent){
     let db = new Localbase('db');
     await db.collection('lootEvent').get().then(lootEvent2 => {
       if(lootEvent2.length > 0){
-        console.log(lootEvent2);
+        //console.log(lootEvent2);
         lootEvent2.forEach( item => {
           console.log('d')
           lootEvents.push(item)
@@ -88,6 +94,7 @@ async function updateTable2(lootEvent){
 
   function addPlayer(){
     let db = new Localbase('db');
+
     var playerName = document.getElementById("textBoxPlayerName").value;
     var index = players.findIndex(element => element.name == playerName);
     console.log(index);
@@ -101,16 +108,17 @@ async function updateTable2(lootEvent){
           updatePlayerName = false;
         }else{
           var size;
-          if(players.length == 0){
-            size = 2;
-          }else{
-            size = players.length;
-          }
+          //if(players.length == 0){
+          //  size = 2;
+          //}else{
+          //  size = players.length;
+          //}
           db.collection('players').add({
-            id: size,
+            id: players.length,
             name: playerName,
             active: true ,
           })
+          players.push({ id: players.length,name: playerName,active: true });
           getPlayer2();
           insertPlayerOldEvents(players.length, playerName);
           modalClose('mymodalcentered2');
@@ -134,6 +142,10 @@ async function updateTable2(lootEvent){
         lootEvent2.forEach( item => {
           events.push(item)
         })
+      }else{
+        var tHead = document.getElementById("tHead");
+        tHead.innerHTML = "";
+        setHeaders();
       }
   })
   events.forEach( event => {
@@ -182,7 +194,7 @@ async function updateTable2(lootEvent){
 
 
   function myFunction() {
-  console.log("showAllData", lootEvents);
+  //console.log("showAllData", lootEvents);
   showAllData(lootEvents);
   //lootEvents.forEach( (item,index)=> {
 
@@ -197,7 +209,6 @@ async function updateTable2(lootEvent){
       //.then(data => myFunction2(data))
       
   }
-
 
   function formatReturn(value){
 
@@ -241,22 +252,24 @@ async function updateTable2(lootEvent){
   }
 
   function setHeaders(event, position){
-    console.log(event)
-    let table = document.getElementById("tHead");
-    let row = table.insertRow(event.id);
-    row.setAttribute("class","flex-no wrap headerTableSize");     
-    row.setAttribute("id","tr"+event.id);
-
-
+    //console.log(event)
     const body = document.body;
+    let table = document.getElementById("tHead");
+
+    const rowTr = document.createElement("tr"); 
+    rowTr.setAttribute("class","flex-no wrap headerTableSize");     
+    rowTr.setAttribute("id","tr"+event.id);
+    body.querySelector(`#tHead`).appendChild(rowTr);
+
+
     const cellLootName = document.createElement("th"); 
     cellLootName.setAttribute("class","headerStyle");
-    cellLootName.innerHTML = "Loot Name";
+    cellLootName.innerHTML = "Nome do Loot";
     body.querySelector(`#tr${event.id}`).appendChild(cellLootName);
 
     const cellLootValue = document.createElement("th"); 
     cellLootValue.setAttribute("class","headerStyle");  
-    cellLootValue.innerHTML = "Loot Value";
+    cellLootValue.innerHTML = "Valor do Loot";
     body.querySelector(`#tr${event.id}`).appendChild(cellLootValue);
    
     for (let index = 0; index < event.totalPlayers; index++) {
@@ -269,30 +282,64 @@ async function updateTable2(lootEvent){
       body.querySelector(`#tr${event.id}`).appendChild(th);
     }     
     
+  }
 
+  function setHeaders(){
+    console.log('setHeaders 2')
+    const body = document.body;
+    let table = document.getElementById("tHead");
+
+    const rowTr = document.createElement("tr"); 
+    rowTr.setAttribute("class","flex-no wrap headerTableSize");     
+    rowTr.setAttribute("id","tr"+0);
+    body.querySelector(`#tHead`).appendChild(rowTr);
+
+
+    const cellLootName = document.createElement("th"); 
+    cellLootName.setAttribute("class","headerStyle");
+    cellLootName.innerHTML = "Nome do Loot";
+    body.querySelector(`#tr${0}`).appendChild(cellLootName);
+
+    const cellLootValue = document.createElement("th"); 
+    cellLootValue.setAttribute("class","headerStyle");  
+    cellLootValue.innerHTML = "Valor do Loot";
+    body.querySelector(`#tr${0}`).appendChild(cellLootValue);
+   
+    for (let index = 0; index < players.length; index++) {
+      console.log('setHeaders 2', players[index].name)
+      const th = document.createElement("th");  
+      th.setAttribute("class","headerStyle");
+      th.setAttribute("ondblclick",`updatePlayerName('${players[index].name}')`)
+      th.innerHTML = players[index].name;
+      th.setAttribute("id",`head ${0} ${index}`);
+      body.querySelector(`#tr${0}`).appendChild(th);
+    }     
+    
   }
 
   function setRows(event, position){
 
     let table = document.getElementById("rowTbody");
+    const body = document.body;
+    //let row = table.insertRow(position);
+    const rowTr = document.createElement("tr"); 
+    rowTr.setAttribute("class","rowTableTr flex-no wrap");     
+    rowTr.setAttribute("id","row"+position);
+    body.querySelector(`#rowTbody`).appendChild(rowTr);
 
-    let row = table.insertRow(position);
-    row.setAttribute("class"," rowTableTr flex-no wrap");     
-    row.setAttribute("id","row"+position);
+    //console.log(event.lootEvent);
 
-    console.log(event.lootEvent);
-
-    let cellLootName = row.insertCell(0);
+    let cellLootName = rowTr.insertCell(0);
     cellLootName.setAttribute("class"," rowTableTd");  
-    console.log(event);
+    //console.log(event);
     cellLootName.innerHTML = event.loot.name;
 
-    let cellLootValue = row.insertCell(1);
+    let cellLootValue = rowTr.insertCell(1);
     cellLootValue.setAttribute("class"," rowTableTd");  
     cellLootValue.innerHTML =  formatReturn(event.loot.value);
 
     for (let index = 0; index < event.totalPlayers ; index++) {
-      let cell2 = row.insertCell(index+2);
+      let cell2 = rowTr.insertCell(index+2);
       if(event.players[index].active){
         if(event.finalPayments[index].value < 0 ){
           cell2.setAttribute("class"," rowTableTdNegative");  
@@ -315,7 +362,7 @@ async function updateTable2(lootEvent){
   
     
   function showAllData(lootEvents){
-    console.log("showAllData");
+    //console.log("showAllData");
     lootEvents.forEach((event, index) => {
       //console.log(JSON.stringify(event));
       setHeaders(event, index);
