@@ -15,15 +15,15 @@
 
 
 .headerTableSize{
-    @apply bg-gray-800 flex flex-col  sm:table-row rounded-l-lg sm:rounded-none mb-2 sm:mb-0;
+    @apply bg-gray-800 flex flex-col sm:table-row rounded-l-lg sm:rounded-none mb-2 sm:mb-0;
 }
 
 .headerStyle{
-    @apply p-3 text-left;
+    @apply p-3 text-center;
 }
 
 .rowTableTr{
-    @apply flex flex-col sm:table-row mb-2 sm:mb-0;
+    @apply flex flex-col text-center sm:table-row mb-2 sm:mb-0;
 }
 
 .rowTableTd{

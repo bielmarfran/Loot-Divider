@@ -160,23 +160,25 @@ async function getPlayer2(){
     row.setAttribute("class","flex-no wrap headerTableSize");     
     row.setAttribute("id","tr"+event.id);
 
-    //let row = document.getElementById("tr"+position);//+index
+
 
     let cellLootName = row.insertCell(0);
     cellLootName.setAttribute("class","headerStyle");
     cellLootName.innerHTML = "Loot Name";
 
     let cellLootValue = row.insertCell(1);
-    cellLootValue.setAttribute("class"," headerStyle");  
+    cellLootValue.setAttribute("class","headerStyle");  
     cellLootValue.innerHTML = "Loot Value";
 
    
     for (let index = 0; index < event.totalPlayers; index++) {
-      let cell = row.insertCell(index+2);
-      cell.setAttribute("class","headerStyle");
-      cell.setAttribute("ondblclick",`updatePlayerName('${event.players[index].name}')`)
-      cell.innerHTML = players[index].name;
-      cell.setAttribute("id","head")
+      const body = document.body;
+      const th = document.createElement("th");  
+      th.setAttribute("class","headerStyle");
+      th.setAttribute("ondblclick",`updatePlayerName('${event.players[index].name}')`)
+      th.innerHTML = players[index].name;
+      th.setAttribute("id",`head ${event.id} ${index}`);
+      body.querySelector(`#tr${event.id}`).appendChild(th);
     }     
     
 
