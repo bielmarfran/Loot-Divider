@@ -3,41 +3,45 @@
 
 @tailwind components;
 
+
+
 @tailwind utilities;
 
 .hello {
     color: red;
 }
 
-.inputIndex{
-    @apply  appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500;
-}
-
-
-.headerTableSize{
-    @apply bg-gray-800 flex flex-col sm:table-row rounded-l-lg sm:rounded-none mb-8 sm:mb-1;
-}
-
-.headerStyle{
-    @apply p-3 text-center ;
-}
-
-.rowTableTr{
-    @apply text-center  flex flex-col sm:table-row mb-8 sm:mb-1;
-}
-
-.rowTableTd{
-    @apply  border hover:bg-gray-200 p-3 truncate;
-}
-
-.rowTableTdNegative{
-    @apply  border hover:bg-gray-200 p-3 truncate text-red-400;
-}
-
-.rowTableTdNotActive{
-    @apply  border bg-gray-300 p-3 truncate;
-}
-
-.labelInput{
-    @apply block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2;
+@layer components{
+    .inputIndex{
+        @apply  appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500;
+    }
+    
+    
+    .headerTableSize{
+        @apply bg-gray-800 flex flex-col sm:table-row rounded-l-lg sm:rounded-none mb-8 sm:mb-1;
+    }
+    
+    .headerStyle{
+        @apply p-3 text-center ;
+    }
+    
+    .rowTableTr{
+        @apply text-center  flex flex-col sm:table-row mb-8 sm:mb-1;
+    }
+    
+    .rowTableTd{
+        @apply  border hover:bg-gray-200 p-3 truncate;
+    }
+    
+    .rowTableTdNegative{
+        @apply  border hover:bg-gray-200 p-3 truncate text-red-400;
+    }
+    
+    .rowTableTdNotActive{
+        @apply  border bg-gray-300 p-3 truncate;
+    }
+    
+    .labelInput{
+        @apply block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2;
+    }
 }
