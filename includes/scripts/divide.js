@@ -14,68 +14,30 @@ document.addEventListener('DOMContentLoaded', async function() {
 async function refresh(){
   clearTable();
   await createTable();
-  myFunction();
+  showAllData(lootEvents);
 }
 
 async function createTable(){
   //console.log('updateUI')
   await getPlayer2();
+  console.log(players);
   await getLootEvents2();
-  setHeaders();
+  setHeadersInitial(players);
   
 }
 
-function clearTable(){
-  var tHead = document.getElementById("tHead");
-  tHead.innerHTML = "";
-  var tBody = document.getElementById("rowTbody");
-  tBody.innerHTML = "";
-}
+
 
 async function updateTable(lootEvent){
   await getPlayer2();
-  //if( lootEvent.id == 0){
-  setHeaders(lootEvent, lootEvent.id);
-  //}
+  setHeaders2(lootEvent, players);
   setRows(lootEvent, lootEvent.id);
 }
 
 
  async function getPlayer2(){
-    let db = new Localbase('db');
-    //console.log('getPlayer Divide')
-    await db.collection('players').get().then(users => {
-      if(users.length == 0){
-        db.collection('players').add({
-          id: 0,
-          name: 'Player 1',
-          active: true ,
-        })
-        db.collection('players').add({
-          id: 1,
-          name: 'Player 2',
-          active: true ,
-        })
-        players.push({id: 0, name: 'Player 1', active: true});
-        players.push({id: 1, name: 'Player 2', active: true});
-
-        /*
-        db.collection('players').add({
-          id: 2,
-          name: 'Gabriel',
-          alive: true ,
-        })
-        db.collection('players').add({
-          id: 3,
-          name: 'Julio',
-        })*/
-
-      }else{
-        players = users;
-        
-      }
-    })
-    
+  players = await getPlayer(players);
+       
   }
 
   async function getLootEvents2(){
@@ -93,7 +55,8 @@ async function updateTable(lootEvent){
   }
 
 
-  function addPlayer(){
+  function addPlayer2(){
+    console.log('Inside addPlayer');
     let db = new Localbase('db');
 
     var playerName = document.getElementById("textBoxPlayerName").value;
@@ -108,18 +71,8 @@ async function updateTable(lootEvent){
           })
           updatePlayerName = false;
         }else{
-          var size;
-          //if(players.length == 0){
-          //  size = 2;
-          //}else{
-          //  size = players.length;
-          //}
-          db.collection('players').add({
-            id: players.length,
-            name: playerName,
-            active: true ,
-          })
           players.push({ id: players.length,name: playerName,active: true });
+          addPlayer(players[players.length-1])
           getPlayer2();
           insertPlayerOldEvents(players.length, playerName);
           modalClose('mymodalcentered2');
@@ -135,7 +88,8 @@ async function updateTable(lootEvent){
     }
   }
 
- async function insertPlayerOldEvents(id, name){
+
+  async function insertPlayerOldEvents(id, name){
   var events = [];
   let db = new Localbase('db');
   await db.collection('lootEvent').get().then(lootEvent2 => {
@@ -144,8 +98,7 @@ async function updateTable(lootEvent){
           events.push(item)
         })
       }else{
-
-        setHeaders();
+        setHeadersInitial(players);
       }
   })
   events.forEach( event => {
@@ -193,23 +146,6 @@ async function updateTable(lootEvent){
   }
 
 
-  function myFunction() {
-  //console.log("showAllData", lootEvents);
-  showAllData(lootEvents);
-  //lootEvents.forEach( (item,index)=> {
-
-    //myFunction2(item,index)
-
-  
-  //});
-  
-  
-    //fetch('../../players.json')
-      //.then(results => results.json())
-      //.then(data => myFunction2(data))
-      
-  }
-
   function formatReturn(value){
 
     let returnValue ;
@@ -251,126 +187,11 @@ async function updateTable(lootEvent){
 
   }
 
-  function setHeaders(event, position){
-    //console.log(event)
-    var tHead = document.getElementById("tHead");
-    tHead.innerHTML = "";
-
-    const body = document.body;
-    let table = document.getElementById("tHead");
-
-    const rowTr = document.createElement("tr"); 
-    rowTr.setAttribute("class","flex-no wrap headerTableSize");     
-    rowTr.setAttribute("id","tr"+event.id);
-    body.querySelector(`#tHead`).appendChild(rowTr);
-
-
-    const cellLootName = document.createElement("th"); 
-    cellLootName.setAttribute("class","headerStyle");
-    cellLootName.innerHTML = "Nome do Loot";
-    body.querySelector(`#tr${event.id}`).appendChild(cellLootName);
-
-    const cellLootValue = document.createElement("th"); 
-    cellLootValue.setAttribute("class","headerStyle");  
-    cellLootValue.innerHTML = "Valor do Loot";
-    body.querySelector(`#tr${event.id}`).appendChild(cellLootValue);
-   
-    for (let index = 0; index < event.totalPlayers; index++) {
-
-      const th = document.createElement("th");  
-      th.setAttribute("class","headerStyle");
-      th.setAttribute("ondblclick",`updatePlayerName('${event.players[index].name}')`)
-      th.innerHTML = players[index].name;
-      th.setAttribute("id",`head ${event.id} ${index}`);
-      body.querySelector(`#tr${event.id}`).appendChild(th);
-    }     
-    
-  }
-
-  function setHeaders(){
-    console.log('setHeaders 2')
-    var tHead = document.getElementById("tHead");
-    tHead.innerHTML = "";
-    const body = document.body;
-    let table = document.getElementById("tHead");
-
-    const rowTr = document.createElement("tr"); 
-    rowTr.setAttribute("class","flex-no wrap headerTableSize");     
-    rowTr.setAttribute("id","tr"+0);
-    body.querySelector(`#tHead`).appendChild(rowTr);
-
-
-    const cellLootName = document.createElement("th"); 
-    cellLootName.setAttribute("class","headerStyle");
-    cellLootName.innerHTML = "Nome do Loot";
-    body.querySelector(`#tr${0}`).appendChild(cellLootName);
-
-    const cellLootValue = document.createElement("th"); 
-    cellLootValue.setAttribute("class","headerStyle");  
-    cellLootValue.innerHTML = "Valor do Loot";
-    body.querySelector(`#tr${0}`).appendChild(cellLootValue);
-   
-    for (let index = 0; index < players.length; index++) {
-      console.log('setHeaders 2', players[index].name)
-      const th = document.createElement("th");  
-      th.setAttribute("class","headerStyle");
-      th.setAttribute("ondblclick",`updatePlayerName('${players[index].name}')`)
-      th.innerHTML = players[index].name;
-      th.setAttribute("id",`head ${0} ${index}`);
-      body.querySelector(`#tr${0}`).appendChild(th);
-    }     
-    
-  }
-
-  function setRows(event, position){
-
-    let table = document.getElementById("rowTbody");
-    const body = document.body;
-    //let row = table.insertRow(position);
-    const rowTr = document.createElement("tr"); 
-    rowTr.setAttribute("class","rowTableTr flex-no wrap");     
-    rowTr.setAttribute("id","row"+position);
-    body.querySelector(`#rowTbody`).appendChild(rowTr);
-
-    //console.log(event.lootEvent);
-
-    let cellLootName = rowTr.insertCell(0);
-    cellLootName.setAttribute("class"," rowTableTd");  
-    //console.log(event);
-    cellLootName.innerHTML = event.loot.name;
-
-    let cellLootValue = rowTr.insertCell(1);
-    cellLootValue.setAttribute("class"," rowTableTd");  
-    cellLootValue.innerHTML =  formatReturn(event.loot.value);
-
-    for (let index = 0; index < event.totalPlayers ; index++) {
-      let cell2 = rowTr.insertCell(index+2);
-      if(event.players[index].active){
-        if(event.finalPayments[index].value < 0 ){
-          cell2.setAttribute("class"," rowTableTdNegative");  
-        }else{
-          cell2.setAttribute("class"," rowTableTd");  
-        }
-        cell2.innerHTML = formatReturn(event.finalPayments[index].value) ;
-      }else{
-        cell2.setAttribute("class"," rowTableTdNotActive");  
-        cell2.innerHTML = '-';
-      }
-           
-      if(index == event.totalPlayers-1){
-        cell2.setAttribute("style",`margin-top:${event.totalPlayers-1}px`);//
-      }
-     
-      
-    }
-  }   
-  
-    
+ 
   function showAllData(lootEvents){
     //console.log("showAllData");
     lootEvents.forEach((event, index) => {
-      //console.log(JSON.stringify(event));
-      setHeaders(event, index);
+      setHeaders2(event, players);
       setRows(event, index);
     })
 

@@ -2,16 +2,16 @@
 var total = 0;
 var players = [];
 var lootEvents = [];
-//var create = true;
-
-
 
 
 
   async function getValues(key){
     try {
       console.log('getValues')
-      const t  = await getPlayer();
+      players = await getPlayer(players);
+      if(players.length != 0){
+        createInputFields(players);
+      }
       const t2 = await getLootEvents();
       total    = await getTotal();
 
@@ -56,6 +56,7 @@ var lootEvents = [];
     //alert(total)
   }
 
+
   function getValue(id){
 
     var value = parseFloat(document.getElementById(id).value);
@@ -68,18 +69,8 @@ var lootEvents = [];
   }
 
 
-  function getPlayer(){
-    let db = new Localbase('db');
-    db.collection('players').get().then(users => {
-      if(users.length != 0){
-        players = users;
-        createInputFields();
-        
-      }
-     
-    })
-    return true;
-  }
+
+
 
   function getLootEvents(){
     console.log('getLootEvents Loot');
@@ -93,65 +84,14 @@ var lootEvents = [];
     })
   }
   
-  function createInputFields(){
 
-    const body = document.body;
-    var count = 0 ;
-    for (let index = 0; index < players.length; index++) {
-     
-      
-      if(index % 2 == 0){
-        count = index;
-        if(!checkExist("div"+index)){
-          const div = document.createElement("div");  
-          div.setAttribute("class","flex flex-wrap -mx-3 mb-2"); 
-          div.setAttribute("id","div"+index);  
-          body.querySelector('#mainModal2').appendChild(div);
-        }
 
-      }
-      if(!checkExist("div2-"+index)){
-        const div2 = document.createElement("div");  
-        div2.setAttribute("class","w-full md:w-2/4 px-3 mb-6 md:mb-0"); 
-        div2.setAttribute("id","div2-"+index); 
-        body.querySelector('#div'+count).appendChild(div2);
-      }
-    
-
-      if(!checkExist("label"+index)){
-        const label = document.createElement("label");  
-        label.setAttribute("class","labelInput"); 
-        label.setAttribute("for",""); 
-        label.setAttribute("id","label"+index); 
-        label.innerHTML = players[index].name;
-        body.querySelector('#div2-'+index).appendChild(label);
-      }
-      
-
-      if(!checkExist("input"+players[index].id)){
-        const input = document.createElement("input");  
-        input.setAttribute("class","inputIndex"); 
-        input.setAttribute("onchange",`sumAll(this.id)`); 
-        input.setAttribute("type","number"); 
-        input.setAttribute("min","0"); 
-        input.setAttribute("value","0"); 
-        input.setAttribute("id","input"+players[index].id); 
-        input.setAttribute("step","1"); 
-        input.setAttribute("pattern","\d+"); 
-        body.querySelector('#div2-'+index).appendChild(input);
-      }
-
-  
-      
-    }
-
-  }
-  
   function checkExist(id){
     var exist = !! document.getElementById(id);
     //console.log(id,exist);
     return exist;
   }
+
 
   function sumAll(id){
     var sum = 0;
@@ -167,12 +107,13 @@ var lootEvents = [];
     sum = 0;
   }
 
+
   function createEvent(){
     
     window.alert('key');
   }
 
- function cleanEvent(key){
+  function cleanEvent(key){
 
       if(lootEvents.length  ==  0 ){
         if(document.getElementById("lootName").innerHTML == 'Loot'){
@@ -264,6 +205,7 @@ var lootEvents = [];
       clearInputAll();
   }
 
+
   function getInicialPayment(){
     var inicial = [];
     for (let index = 0; index < players.length; index++) {
@@ -274,6 +216,7 @@ var lootEvents = [];
     return inicial;
   }
 
+
   function createFinalPayments(){
     var final = [];
     for (let index = 0; index < players.length; index++) {
@@ -281,6 +224,7 @@ var lootEvents = [];
     }
     return final;
   }
+
 
   function createDebt(){
     var debt = [];
@@ -453,6 +397,7 @@ var lootEvents = [];
  
   }
 
+
   function pay(item, lootEvent ,  lastLootEvent, partShare, over){
     //item.payment = false;
     if(item.part > 0){
@@ -475,6 +420,7 @@ var lootEvents = [];
     }
   }
   
+
   function pay2(item, lootEvent ,  lastLootEvent, partShare, over){
 
     if(item.ExtraPay > 0){
@@ -522,6 +468,7 @@ var lootEvents = [];
       }
     })
   }
+
 
   function payParts(item,lastLootEvent, partShare, over, lootEvent){
     console.log('payParts','ID : '+item.id);
@@ -789,38 +736,6 @@ var lootEvents = [];
 
 
 
-
-
-  async function openModal(key) {
-    var show;
-    if(key === 'mymodalcentered2'){
-      show = true;
-    }else{
-      show = await getValues(key);
-     
-    }
-    if(show){
-      document.getElementById(key).showModal(); 
-      document.body.setAttribute('style', 'overflow: hidden;'); 
-      document.getElementById(key).children[0].scrollTop = 0; 
-      document.getElementById(key).children[0].classList.remove('opacity-0'); 
-      document.getElementById(key).children[0].classList.add('opacity-100');
-      }
-
-
-    
-}
-
-
-
-function modalClose(key) {
-    document.getElementById(key).children[0].classList.remove('opacity-100');
-    document.getElementById(key).children[0].classList.add('opacity-0');
-    setTimeout(function () {
-        document.getElementById(key).close();
-        document.body.removeAttribute('style');
-    }, 100);
-}
 
 function clearInputAll(){
   clearInput('platinium',0);
