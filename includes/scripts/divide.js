@@ -1,18 +1,17 @@
 
 var lootEvents = [];
 var players = [];
-var updatePlayerName;
+var updatePlayerName2 = {status:false};
 
 
 document.addEventListener('DOMContentLoaded', async function() {    
-    var table = document.getElementById("tableLoot");
 
     await refresh();
 
 }, false);
 
 async function refresh(){
-  clearTable();
+  await clearTable();
   await createTable();
   showAllData(lootEvents);
 }
@@ -55,7 +54,7 @@ async function updateTable(lootEvent){
   }
 
 
-  function addPlayer2(){
+  async function addPlayer2(){
     console.log('Inside addPlayer');
     let db = new Localbase('db');
 
@@ -65,17 +64,22 @@ async function updateTable(lootEvent){
     var t = playerName.trim();
     if(!!playerName && t.length > 0){
       if(index == -1){
-        if(updatePlayerName.status){
-          db.collection('players').doc({ name: updatePlayerName.name}).update({
-            name: playerName,
-          })
-          updatePlayerName = false;
+        if(updatePlayerName2.status){
+          console.log('updatePlayerName');
+          updatePlayerName2.newName = playerName;
+
+          await updatePlayer(updatePlayerName2);
+          await refresh();
+          modalClose('mymodalcentered2');
+          updatePlayerName2.status = false;
+          document.getElementById("textBoxPlayerName").value = "";
         }else{
           players.push({ id: players.length,name: playerName,active: true });
           addPlayer(players[players.length-1])
           getPlayer2();
           insertPlayerOldEvents(players.length, playerName);
           modalClose('mymodalcentered2');
+          document.getElementById("textBoxPlayerName").value = "";
         }
       }else{
         window.alert("Os nomes devem unicos");
@@ -104,7 +108,7 @@ async function updateTable(lootEvent){
   events.forEach( event => {
    event.totalPlayers ++;
    event.players.push({id: id,name:name, active:false})
-   event.inicialPayments.push({idPlayer: id, value:0})
+   event.initialPayments.push({idPlayer: id, value:0})
    event.finalPayments.push({idPlayer: id, value:0})
     var oldDebt = JSON.parse(JSON.stringify(events[0].debt));
     console.log(oldDebt);
@@ -128,19 +132,26 @@ async function updateTable(lootEvent){
     db.collection('lootEvent').doc({ id: event.id}).update({
       totalPlayers:event.totalPlayers,
       players:event.players,
-      inicialPayments:event.inicialPayments,
+      initialPayments:event.initialPayments,
       finalPayments:event.finalPayments,
       debt:event.debt,
     })
-    refresh();
+    
   })
-
+  refresh();
   }
 
 
   function updatePlayerName(name){
-    console.log(name);
-    updatePlayerName = { status:true, name:name};
+
+
+    
+    try {
+      console.log(name);     
+    } catch (error) {
+      console.log(error);
+    }
+    updatePlayerName2 = { status:true, name:name};
     openModal('mymodalcentered2')
 
   }
@@ -196,5 +207,5 @@ async function updateTable(lootEvent){
     })
 
   }
-
+  
 

@@ -1,3 +1,5 @@
+
+
 function createInputFields(players){
 
     const body = document.body;
@@ -69,6 +71,7 @@ async function openModal(key) {
 }
 
 function modalClose(key) {
+
     document.getElementById(key).children[0].classList.remove('opacity-100');
     document.getElementById(key).children[0].classList.add('opacity-0');
     setTimeout(function () {
@@ -78,7 +81,7 @@ function modalClose(key) {
 }
 
 function setRows(event, position){
-
+  console.log('setRows',event);
     //let table = document.getElementById("rowTbody");
     const body = document.body;
     
@@ -120,7 +123,7 @@ function setRows(event, position){
 }   
 
 function setHeadersInitial(players){
-    console.log('setHeaders 2',players);
+    console.log('setHeadersInitial',players);
     var tHead = document.getElementById("tHead");
     tHead.innerHTML = "";
     const body = document.body;
@@ -143,7 +146,6 @@ function setHeadersInitial(players){
     body.querySelector(`#tr${0}`).appendChild(cellLootValue);
    
     for (let index = 0; index < players.length; index++) {
-      console.log('setHeaders 2', players[index].name)
       const th = document.createElement("th");  
       th.setAttribute("class","headerStyle");
       th.setAttribute("ondblclick",`updatePlayerName('${players[index].name}')`)
@@ -155,42 +157,65 @@ function setHeadersInitial(players){
 }
   
 function setHeaders2(event, players){
-    //console.log(event)
-    var tHead = document.getElementById("tHead");
-    tHead.innerHTML = "";
+    console.log('setHeaders2',event);
 
-    const body = document.body;
-    let table = document.getElementById("tHead");
-
-    const rowTr = document.createElement("tr"); 
-    rowTr.setAttribute("class","flex-no wrap headerTableSize");     
-    rowTr.setAttribute("id","tr"+event.id);
-    body.querySelector(`#tHead`).appendChild(rowTr);
-
-
-    const cellLootName = document.createElement("th"); 
-    cellLootName.setAttribute("class","headerStyle");
-    cellLootName.innerHTML = "Nome do Loot";
-    body.querySelector(`#tr${event.id}`).appendChild(cellLootName);
-
-    const cellLootValue = document.createElement("th"); 
-    cellLootValue.setAttribute("class","headerStyle");  
-    cellLootValue.innerHTML = "Valor do Loot";
-    body.querySelector(`#tr${event.id}`).appendChild(cellLootValue);
-   
-    for (let index = 0; index < event.totalPlayers; index++) {
-
-      const th = document.createElement("th");  
-      th.setAttribute("class","headerStyle");
-      th.setAttribute("ondblclick",`updatePlayerName('${event.players[index].name}')`)
-      th.innerHTML = players[index].name;
-      th.setAttribute("id",`head ${event.id} ${index}`);
-      body.querySelector(`#tr${event.id}`).appendChild(th);
-    }     
+    if(event.id != 0){
+        const body = document.body;
+        let table = document.getElementById("tHead");
+    
+        const rowTr = document.createElement("tr"); 
+        rowTr.setAttribute("class","flex-no wrap headerTableSize");     
+        rowTr.setAttribute("id","tr"+event.id);
+        body.querySelector(`#tHead`).appendChild(rowTr);
+    
+    
+        const cellLootName = document.createElement("th"); 
+        cellLootName.setAttribute("class","headerStyle");
+        cellLootName.innerHTML = "Nome do Loot";
+        body.querySelector(`#tr${event.id}`).appendChild(cellLootName);
+    
+        const cellLootValue = document.createElement("th"); 
+        cellLootValue.setAttribute("class","headerStyle");  
+        cellLootValue.innerHTML = "Valor do Loot";
+        body.querySelector(`#tr${event.id}`).appendChild(cellLootValue);
+       
+        for (let index = 0; index < event.totalPlayers; index++) {
+    
+          const th = document.createElement("th");  
+          th.setAttribute("class","headerStyle");
+          th.setAttribute("ondblclick",`updatePlayerName('${event.players[index].name}')`)
+          th.innerHTML = players[index].name;
+          th.setAttribute("id",`head ${event.id} ${index}`);
+          body.querySelector(`#tr${event.id}`).appendChild(th);
+        }     
+    }else{
+        setHeadersInitial(players);
+    }
+  
     
 }
 
-function clearTable(){
+function clearInputAll(){
+    clearInput('platinium',0);
+    clearInput('gold',0);
+    clearInput('electron',0);
+    clearInput('silver',0);
+    clearInput('copper',0);
+    clearInput('itens',0);
+  
+    players.forEach((item,index) =>{
+      clearInput(`input${index}`,0);
+    })
+  
+}
+
+function clearInput(key,value){
+  //console.log(key);
+  document.getElementById(key).value = value;
+}
+
+
+async function clearTable(){
     var tHead = document.getElementById("tHead");
     tHead.innerHTML = "";
     var tBody = document.getElementById("rowTbody");
