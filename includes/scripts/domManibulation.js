@@ -218,6 +218,12 @@ function clearInput(key,value){
 }
 
 
+function closeAlert(){
+  const body = document.body;
+  var alert = body.querySelector('#alertSection');
+  alert.setAttribute("class","hidden");  
+}
+
 async function clearTable(){
     var tHead = document.getElementById("tHead");
     tHead.innerHTML = "";

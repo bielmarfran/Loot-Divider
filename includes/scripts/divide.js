@@ -7,6 +7,31 @@ var updatePlayerName2 = {status:false};
 document.addEventListener('DOMContentLoaded', async function() {    
 
     await refresh();
+    if (window.FileList && window.File && window.FileReader) {
+      document.getElementById('file-selector').addEventListener('change', event => {
+        const file = event.target.files[0];
+        if (!file.type) {
+          window.alert('Error: The File.type property does not appear to be supported on this browser.')
+          document.getElementById('file-selector').value = [];
+          return;
+        }
+        if (!file.type.match('text.*')) {
+          window.alert('Error: The selected file does not appear to be an image..') 
+          document.getElementById('file-selector').value = [];
+          return;
+        }
+        console.log(file);
+        const reader = new FileReader();
+        reader.addEventListener('load', event => {
+          
+          var x = JSON.parse(event.target.result);
+          console.log(x);
+          //console.log(event.target.result);
+        });
+        reader.readAsText(file);
+      });
+    }
+
 
 }, false);
 

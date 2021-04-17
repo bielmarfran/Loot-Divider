@@ -8,20 +8,22 @@ function download(content, fileName, contentType) {
 //download(jsonData, 'json.txt', 'text/plain');
 
 async function exportData(){
-    var data = [];
+    var data = { player: '' , lootEvent: ''};
     let db = new Localbase('db');
+    await  db.collection('players').get().then(users => {
+        if(users.length != 0){
+            //data.push(users) 
+            data.player = users;
+        }
+    }) 
     await db.collection('lootEvent').get().then(lootEvent => {
       if(lootEvent.length > 0){
          //= JSON.stringify(lootEvent);
-         data.push(lootEvent)
+         data.lootEvent = lootEvent;
         //
       }
     })
-    await  db.collection('players').get().then(users => {
-        if(users.length != 0){
-            data.push(users) 
-        }
-    }) 
+
     var db2 = JSON.stringify(data);
     download(db2,"lootDB","json");
     console.log(data);

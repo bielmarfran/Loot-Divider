@@ -76,12 +76,17 @@ async function updatePlayer(player){
 }
 
 async function deleteDataBase(){
+  
+  const body = document.body;
   let db = new Localbase('db');
   try {
     await db.delete();
     modalClose('mymodalcenteredConfig');
+    var alert = body.querySelector('#alertSection');
+    alert.setAttribute("class","w-7/12");  
+    //alert.setAtribute("class","");
   } catch (error) {
-    
+    window.alert(`Erro : ${error}`);
   }
   
 }

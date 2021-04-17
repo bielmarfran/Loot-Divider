@@ -46,6 +46,25 @@
   <div class="flex flex-col h-screen bg-gray-100">
     <!-- Auth Card Container -->
     <div class="grid place-items-center mx-2 my-20 sm:my-auto sm:rounded-lg"> 
+      <div id="alertSection" class="w-7/12 hidden">
+        <div
+        class="bg-blue-200 px-6 py-4 mx-2 my-4 rounded-md text-lg items-center mx-auto w-3/4 xl:w-2/4"
+        >
+          <svg viewBox="0 0 24 24" class="text-blue-600 hidden w-5 h-5 sm:w-5 sm:h-5 mr-3 inline sm:block sm:inline">
+            <path
+                  fill="currentColor"
+                  d="M12,0A12,12,0,1,0,24,12,12.013,12.013,0,0,0,12,0Zm.25,5a1.5,1.5,0,1,1-1.5,1.5A1.5,1.5,0,0,1,12.25,5ZM14.5,18.5h-4a1,1,0,0,1,0-2h.75a.25.25,0,0,0,.25-.25v-4.5a.25.25,0,0,0-.25-.25H10.5a1,1,0,0,1,0-2h1a2,2,0,0,1,2,2v4.75a.25.25,0,0,0,.25.25h.75a1,1,0,1,1,0,2Z"
+                  ></path>
+          </svg>
+          <span class="text-blue-800"> Banco Deletado. </span>
+          <div class="inline float-right">
+            <svg xmlns="http://www.w3.org/2000/svg" onclick="closeAlert()" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </div>
+
+        </div>
+      </div>
       <div class="w-7/12  bg-white rounded-lg shadow-lg my-10">
         <svg xmlns="http://www.w3.org/2000/svg" onclick="openModal('mymodalcenteredConfig')" class="h-7 w-7  inline	float-right mt-5 mr-5" viewBox="0 0 20 20" fill="currentColor">
           <path fill-rule="evenodd" d="M11.49 3.17c-.38-1.56-2.6-1.56-2.98 0a1.532 1.532 0 01-2.286.948c-1.372-.836-2.942.734-2.106 2.106.54.886.061 2.042-.947 2.287-1.561.379-1.561 2.6 0 2.978a1.532 1.532 0 01.947 2.287c-.836 1.372.734 2.942 2.106 2.106a1.532 1.532 0 012.287.947c.379 1.561 2.6 1.561 2.978 0a1.533 1.533 0 012.287-.947c1.372.836 2.942-.734 2.106-2.106a1.533 1.533 0 01.947-2.287c1.561-.379 1.561-2.6 0-2.978a1.532 1.532 0 01-.947-2.287c.836-1.372-.734-2.942-2.106-2.106a1.532 1.532 0 01-2.287-.947zM10 13a3 3 0 100-6 3 3 0 000 6z" clip-rule="evenodd" />
@@ -230,7 +249,7 @@
         <div class="w-full p-3  md:mb-0">
          <div>
            Limpar o bando de dados :
-           <button type="button" onclick="deleteDataBase()" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mr-3 ml-3 ">
+           <button type="button" onclick="deleteDataBase()" class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded mr-3 ml-3 ">
             Limpar Banco
           </button>   
          </div>
@@ -240,8 +259,11 @@
             Exportar Banco
           </button>
          </div>
-         <div>
+         <hr class="my-5">
+         <div class="">
+   
            Importar o banco de Dados :
+           <input type="file" id="file-selector" accept=".txt" text="tete">
           <button type="button" onclick="exportData()" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mr-3 ml-3 mt-2">
            Importar Banco
          </button>
