@@ -74,3 +74,14 @@ async function updatePlayer(player){
     name: player.newName,
   })
 }
+
+async function deleteDataBase(){
+  let db = new Localbase('db');
+  try {
+    await db.delete();
+    modalClose('mymodalcenteredConfig');
+  } catch (error) {
+    
+  }
+  
+}
