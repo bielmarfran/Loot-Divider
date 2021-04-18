@@ -28,6 +28,7 @@ async function exportData(){
     download(db2,"lootDB","json");
     console.log(data);
 }
+
 async function importData(){
     //
 
@@ -38,13 +39,26 @@ async function importData(){
             window.alert("Os dados inseridos são inválidos, cancelando a importação.");
             document.getElementById('file-selector').value = [];
         }else{
-            window.alert("OK");
+            let db = new Localbase('db');
+            //await db.delete();
+            //db = new Localbase('db');
+            await db.collection('lootEvent').delete()
+            data.lootEvent.forEach(event => {
+                //console.log(event)
+                addLootEvent(event, event.players, event.finalPayments);
+            });
+            await db.collection('players').delete();
+            data.player.forEach(player => { 
+                addPlayer(player);
+
+            });
+          
+            reloadPage();
         }
 
     }else{
 
     }
-    let db = new Localbase('db');
 
 }
 
