@@ -20,15 +20,24 @@ document.addEventListener('DOMContentLoaded', async function() {
           document.getElementById('file-selector').value = [];
           return;
         }
-        console.log(file);
+        ///console.log(file);
         const reader = new FileReader();
         reader.addEventListener('load', event => {
           
+          try {
           var x = JSON.parse(event.target.result);
-          console.log(x);
+          window.MY = {x};
+          document.getElementById("importBank").disabled = false;
+          } catch (error) {
+            window.alert("Erro ao ler o arquivo.");
+            document.getElementById('file-selector').value = [];
+          }
+          //console.log(x);
           //console.log(event.target.result);
         });
-        reader.readAsText(file);
+        
+        reader.readAsText(file);   
+        
       });
     }
 

@@ -77,7 +77,10 @@ async function updatePlayer(player){
 
 async function deleteDataBase(){
   
-  const body = document.body;
+  var txt;
+  var r = confirm("Tem certeza que deseja limpar os dados ?");
+  if (r == true) {
+    const body = document.body;
   let db = new Localbase('db');
   try {
     await db.delete();
@@ -88,5 +91,9 @@ async function deleteDataBase(){
   } catch (error) {
     window.alert(`Erro : ${error}`);
   }
+  } else {
+    txt = "You pressed Cancel!";
+  }
+  
   
 }

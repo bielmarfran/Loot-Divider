@@ -28,3 +28,23 @@ async function exportData(){
     download(db2,"lootDB","json");
     console.log(data);
 }
+async function importData(){
+    //
+
+    var r = confirm("Essa operacao ira remover os dados atuais, Continuar ?");
+    if (r == true) {
+        var data = MY.x;
+        if(data.lootEvent == null && data.player == null){
+            window.alert("Os dados inseridos são inválidos, cancelando a importação.");
+            document.getElementById('file-selector').value = [];
+        }else{
+            window.alert("OK");
+        }
+
+    }else{
+
+    }
+    let db = new Localbase('db');
+
+}
+
