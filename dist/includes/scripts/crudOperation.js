@@ -18,6 +18,26 @@ function addLootEvent(lootEvent){
   })
 }
 
+function addLootEvent(lootEvent, players, finalPayments){
+  let db = new Localbase('db');
+  db.collection('lootEvent').add({
+    id: lootEvent.id,
+    order: lootEvent.order,
+    cal : lootEvent.cal,
+    totalPlayers: lootEvent.totalPlayers,
+    loot:{
+      id:    lootEvent.loot.id,
+      value: lootEvent.loot.value,
+      name:  lootEvent.loot.name
+    },
+    players: players,
+    initialPayments:lootEvent.initialPayments,
+    finalPayments: finalPayments,
+    debt: lootEvent.debt
+  })
+}
+
+
 
 async function getLootEvents(lootEvents2){
   console.log('getLootEvents Loot');
@@ -77,16 +97,24 @@ async function updatePlayer(player){
 
 async function deleteDataBase(){
   
-  const body = document.body;
+  var txt;
+  var r = confirm("Tem certeza que deseja limpar os dados ?");
+  if (r == true) {
+    const body = document.body;
   let db = new Localbase('db');
   try {
     await db.delete();
     modalClose('mymodalcenteredConfig');
     var alert = body.querySelector('#alertSection');
     alert.setAttribute("class","w-7/12");  
+    reloadPage();
     //alert.setAtribute("class","");
   } catch (error) {
     window.alert(`Erro : ${error}`);
   }
+  } else {
+    txt = "You pressed Cancel!";
+  }
+  
   
 }

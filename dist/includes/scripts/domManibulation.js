@@ -104,11 +104,17 @@ function setRows(event, position){
     for (let index = 0; index < event.totalPlayers ; index++) {
       let cell2 = rowTr.insertCell(index+2);
       if(event.players[index].active){
-        if(event.finalPayments[index].value < 0 ){
-          cell2.setAttribute("class"," rowTableTdNegative");  
+        if(event.finalPayments[index].value == undefined){
+          cell2.setAttribute("class"," rowTableTdNotActive");  
+          cell2.innerHTML = '-';
         }else{
-          cell2.setAttribute("class"," rowTableTd");  
+          if(event.finalPayments[index].value < 0 ){
+            cell2.setAttribute("class"," rowTableTdNegative");  
+          }else{
+            cell2.setAttribute("class"," rowTableTd");  
+          }
         }
+
         cell2.innerHTML = formatReturn(event.finalPayments[index].value) ;
       }else{
         cell2.setAttribute("class"," rowTableTdNotActive");  
@@ -230,3 +236,10 @@ async function clearTable(){
     var tBody = document.getElementById("rowTbody");
     tBody.innerHTML = "";
 } 
+
+function reloadPage(){
+  const func = () => {
+    location.reload();
+  };
+  setTimeout(func, 1 * 1000);
+}

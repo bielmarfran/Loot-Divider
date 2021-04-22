@@ -28,3 +28,37 @@ async function exportData(){
     download(db2,"lootDB","json");
     console.log(data);
 }
+
+async function importData(){
+    //
+
+    var r = confirm("Essa operacao ira remover os dados atuais, Continuar ?");
+    if (r == true) {
+        var data = MY.x;
+        if(data.lootEvent == null && data.player == null){
+            window.alert("Os dados inseridos são inválidos, cancelando a importação.");
+            document.getElementById('file-selector').value = [];
+        }else{
+            let db = new Localbase('db');
+            //await db.delete();
+            //db = new Localbase('db');
+            await db.collection('lootEvent').delete()
+            data.lootEvent.forEach(event => {
+                //console.log(event)
+                addLootEvent(event, event.players, event.finalPayments);
+            });
+            await db.collection('players').delete();
+            data.player.forEach(player => { 
+                addPlayer(player);
+
+            });
+          
+            reloadPage();
+        }
+
+    }else{
+
+    }
+
+}
+
