@@ -6,7 +6,7 @@ Loot Divider is a Vanilla Java Script, Tailwind CSS project which aims to assist
 
 ## Site
 
-- The site is hosted on <loot-divider.vercel.app>.
+- The site is hosted on https://loot-divider.vercel.app/.
 
 ## Why?
 
