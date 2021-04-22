@@ -6,7 +6,7 @@ Loot Divider is a Vanilla Java Script, Tailwind CSS project which aims to assist
 
 ## Site
 
-- [Site](loot-divider.vercel.app)
+- The site is hosted on <loot-divider.vercel.app>.
 
 ## Why?
 
@@ -17,8 +17,9 @@ if you find any please give your feedback.
 
 ## Functionalities
 
-- Native GUI build using JavaFx
-- SQLite database used for long-term caching, for better performance.
+- Simple UI
+- Modern and Responsive Design
+- Data persistence using IndexedDB
 
 
 ## Getting Started
@@ -34,17 +35,19 @@ With the environment set up.
 
 Then on the root of the project.
 
+	npm install
+
 	npm run dev
 
 ### Distribution
 
 	npm run build
 
-The ./dist folder will be created with filed ready to.
+The ./dist folder will be created with filed ready for distribution.
 
 	npm run serve
 
-To run the distribution version.
+To test run the distribution version.
 
 ## Built With
 
