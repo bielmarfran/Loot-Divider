@@ -18,7 +18,7 @@ function addLootEvent(lootEvent){
   })
 }
 
-function addLootEvent(lootEvent, players, finalPayments){
+function addLootEvent2(lootEvent, players, finalPayments){
   let db = new Localbase('db');
   db.collection('lootEvent').add({
     id: lootEvent.id,

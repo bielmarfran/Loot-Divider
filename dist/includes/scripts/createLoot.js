@@ -100,8 +100,11 @@ var lootEvents = [];
 
   async function cleanEvent(key){
     lootEvents = await getLootEvents(lootEvents);
+    players = await getPlayer(players);
     console.log(JSON.stringify(lootEvents));
       if(lootEvents.length  ==  0 ){
+
+        console.log(players)
         if(document.getElementById("lootName").innerHTML == 'Loot'){
           document.getElementById("lootName").innerHTML = 'Loot 0';
         }

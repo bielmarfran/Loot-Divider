@@ -45,7 +45,7 @@ async function importData(){
             await db.collection('lootEvent').delete()
             data.lootEvent.forEach(event => {
                 //console.log(event)
-                addLootEvent(event, event.players, event.finalPayments);
+                addLootEvent2(event, event.players, event.finalPayments);
             });
             await db.collection('players').delete();
             data.player.forEach(player => { 
