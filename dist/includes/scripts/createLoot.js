@@ -101,7 +101,7 @@ var lootEvents = [];
   async function cleanEvent(key){
     lootEvents = await getLootEvents(lootEvents);
     players = await getPlayer(players);
-    console.log(JSON.stringify(lootEvents));
+    //console.log(JSON.stringify(lootEvents));
       if(lootEvents.length  ==  0 ){
 
         console.log(players)
@@ -427,9 +427,8 @@ var lootEvents = [];
   }
 
 
-  function payParts(item,lastLootEvent, partShare, over, lootEvent){
+  function payParts(item, lastLootEvent, partShare, over, lootEvent){
     console.log('payParts','ID : '+item.id);
-      console.log("debtPayment Parts 2");
       var countDebt = 0 ;
       lootEvent.debt.forEach(debtItem => {   
        if(debtItem.idOwner == item.id && debtItem.value > 0){
@@ -441,7 +440,7 @@ var lootEvents = [];
      console.log('payParts 3','ID : '+item.id,debtPayment);
      var count =0;
      while(item.partFinal > 0){
-      //console.log('payParts 3','PART : '+item.part);
+      console.log('payParts 3','PART : '+item.part);
       
       lootEvent.debt.every((debtItem, index) => {
         console.log('payParts 4');
@@ -473,6 +472,7 @@ var lootEvents = [];
           console.log('payParts 6', debtPayment.toFixed(2), item.partFinal.toFixed(2) );
            if(item.partFinal > 0){
              if(item.partFinal  >= debtPayment){
+              console.log('payParts 7');
               item.partFinal -= debtPayment;
               if(over[item.id].value < 0){
                 over[item.id].value += debtPayment;
@@ -482,6 +482,10 @@ var lootEvents = [];
               }
               
               //console.log(item);
+              partShare[debtItem.idTarget].ExtraPay += debtPayment;
+              item.ExtraPay -= debtItem.value;
+              debtItem.value -= debtPayment;
+             }else if(debtPayment.toFixed(2) === item.partFinal.toFixed(2)){
               partShare[debtItem.idTarget].ExtraPay += debtPayment;
               item.ExtraPay -= debtItem.value;
               debtItem.value -= debtPayment;
@@ -503,8 +507,6 @@ var lootEvents = [];
 
   function setDebt(lootEvent, over, share, fullShare, partShare, lastLootEvent){
     var count = 0 ;
-    //console.log(partShare);
-    //console.log(over);
     console.log(JSON.stringify(partShare));
 
     lootEvent.debt.forEach((item,index) => {

@@ -81,7 +81,7 @@ function modalClose(key) {
 }
 
 function setRows(event, position){
-  console.log('setRows',event);
+  //console.log('setRows',event);
     //let table = document.getElementById("rowTbody");
     const body = document.body;
     
@@ -90,11 +90,11 @@ function setRows(event, position){
     rowTr.setAttribute("id","row"+position);
     body.querySelector(`#rowTbody`).appendChild(rowTr);
 
-    //console.log(event.lootEvent);
+    ////console.log(event.lootEvent);
 
     let cellLootName = rowTr.insertCell(0);
     cellLootName.setAttribute("class"," rowTableTd");  
-    //console.log(event);
+    ////console.log(event);
     cellLootName.innerHTML = event.loot.name;
 
     let cellLootValue = rowTr.insertCell(1);
@@ -130,7 +130,7 @@ function setRows(event, position){
 }   
 
 function setHeadersInitial(players){
-    console.log('setHeadersInitial',players);
+    //console.log('setHeadersInitial',players);
     var tHead = document.getElementById("tHead");
     tHead.innerHTML = "";
     const body = document.body;
@@ -167,7 +167,7 @@ function setHeadersInitial(players){
 }
   
 function setHeaders2(event, players){
-    console.log('setHeaders2',event);
+    //console.log('setHeaders2',event);
 
     if(event.id != 0){
         const body = document.body;
@@ -220,7 +220,7 @@ function clearInputAll(){
 }
 
 function clearInput(key,value){
-  //console.log(key);
+  ////console.log(key);
   document.getElementById(key).value = value;
 }
 
