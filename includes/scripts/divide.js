@@ -53,7 +53,7 @@ async function refresh(){
 async function createTable(){
   //console.log('updateUI')
   await getPlayer2();
-  console.log(players);
+  //console.log(players);
   await getLootEvents2();
   setHeadersInitial(players);
   
@@ -80,7 +80,7 @@ async function updateTable(lootEvent){
       if(lootEvent2.length > 0){
         //console.log(lootEvent2);
         lootEvent2.forEach( item => {
-          console.log('d')
+          //console.log('d')
           lootEvents.push(item)
         })
       }

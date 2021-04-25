@@ -75,7 +75,7 @@ async function getPlayer(players){
       addPlayer(players[1]);
     }
   }) 
-  console.log(players);
+  //console.log(players);
   return players;
 }
 
