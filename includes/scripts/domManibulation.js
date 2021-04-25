@@ -102,6 +102,7 @@ function setRows(event, position){
     cellLootValue.innerHTML =  formatReturn(event.loot.value);
 
     for (let index = 0; index < event.totalPlayers ; index++) {
+
       let cell2 = rowTr.insertCell(index+2);
       if(event.players[index].active){
         if(event.finalPayments[index].value == undefined){
