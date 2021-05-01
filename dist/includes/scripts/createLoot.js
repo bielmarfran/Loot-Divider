@@ -438,7 +438,7 @@ var lootEvents = [];
      //console.log(countDebt);
      var debtPayment = item.partFinal / countDebt;
      console.log('payParts 3','ID : '+item.id,debtPayment);
-     var count =0;
+     var count = 0;
      while(item.partFinal > 0){
       console.log('payParts 3','PART : '+item.part);
       
@@ -446,6 +446,7 @@ var lootEvents = [];
         console.log('payParts 4');
         count ++;
         if(count > 30){
+          debugger
           throw new Error("Something went badly wrong!");
         }
         if(debtItem.idOwner == item.id && debtItem.value > 0){
@@ -480,15 +481,17 @@ var lootEvents = [];
               if(over[item.id].value > 0){
                 over[item.id].value = 0;
               }
-              
-              //console.log(item);
+
               partShare[debtItem.idTarget].ExtraPay += debtPayment;
               item.ExtraPay -= debtItem.value;
               debtItem.value -= debtPayment;
              }else if(debtPayment.toFixed(2) === item.partFinal.toFixed(2)){
+              console.log('payParts 8 - else if');
+              item.partFinal -= debtPayment;
               partShare[debtItem.idTarget].ExtraPay += debtPayment;
               item.ExtraPay -= debtItem.value;
               debtItem.value -= debtPayment;
+
              }
             //console.log(item.part);
            }else{
