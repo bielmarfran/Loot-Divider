@@ -1,5 +1,5 @@
-
-
+/* eslint-disable */
+var showMore = true;
 function createInputFields(players){
 
     const body = document.body;
@@ -129,6 +129,34 @@ function setRows(event, position){
     }
 }   
 
+function collapseTable(){
+  var path = event.path || (event.composedPath && event.composedPath());
+  if(showMore){
+    path[1].innerHTML = 
+    `<svg xmlns="http://www.w3.org/2000/svg" onclick="collapseTable()" class="h-6 w-6 inline float-left ml-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 12H6" />
+    </svg>` + `Nome do Loot ` ;
+    let table = document.getElementById("rowTbody").getElementsByTagName("tr");
+    for (let index = 0; index < table.length -2; index++) {
+      table[index].className = "hidden"; 
+    }
+    showMore = false;
+  }else{
+    path[1].innerHTML =
+    `<svg xmlns="http://www.w3.org/2000/svg" onclick="collapseTable()" class="h-6 w-6 inline float-left ml-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+    </svg>` + `Nome do Loot ` ;
+    let table = document.getElementById("rowTbody").getElementsByTagName("tr");
+    for (let index = 0; index < table.length -2; index++) {
+      table[index].className = "rowTableTr flex-no wrap";
+      
+    }
+    showMore = true;
+  }
+
+
+}
+
 function setHeadersInitial(players){
     //console.log('setHeadersInitial',players);
     var tHead = document.getElementById("tHead");
@@ -144,7 +172,10 @@ function setHeadersInitial(players){
 
     const cellLootName = document.createElement("th"); 
     cellLootName.setAttribute("class","headerStyle");
-    cellLootName.innerHTML = `Nome do Loot `;
+    cellLootName.innerHTML = `
+    <svg xmlns="http://www.w3.org/2000/svg" onclick="collapseTable()" class="h-6 w-6 inline float-left ml-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+    </svg>` + `Nome do Loot ` ;
     body.querySelector(`#tr${0}`).appendChild(cellLootName);
 
     const cellLootValue = document.createElement("th"); 
@@ -155,7 +186,6 @@ function setHeadersInitial(players){
     for (let index = 0; index < players.length; index++) {
       const th = document.createElement("th");  
       th.setAttribute("class","headerStyle");
-      //th.setAttribute("ondblclick",`updatePlayerName('${players[index].name}')`)
       th.innerHTML = players[index].name + `
       <svg xmlns="http://www.w3.org/2000/svg" onclick="updatePlayerName('${players[index].name}')" class="h-5 w-5  inline 	float-right ml-2 mt-0.5" viewBox="0 0 20 20" fill="currentColor">
         <path fill-rule="evenodd" d="M11.49 3.17c-.38-1.56-2.6-1.56-2.98 0a1.532 1.532 0 01-2.286.948c-1.372-.836-2.942.734-2.106 2.106.54.886.061 2.042-.947 2.287-1.561.379-1.561 2.6 0 2.978a1.532 1.532 0 01.947 2.287c-.836 1.372.734 2.942 2.106 2.106a1.532 1.532 0 012.287.947c.379 1.561 2.6 1.561 2.978 0a1.533 1.533 0 012.287-.947c1.372.836 2.942-.734 2.106-2.106a1.533 1.533 0 01.947-2.287c1.561-.379 1.561-2.6 0-2.978a1.532 1.532 0 01-.947-2.287c.836-1.372-.734-2.942-2.106-2.106a1.532 1.532 0 01-2.287-.947zM10 13a3 3 0 100-6 3 3 0 000 6z" clip-rule="evenodd" />
@@ -200,7 +230,7 @@ function setHeaders2(event, players){
         }     
     }else{
         setHeadersInitial(players);
-    }
+  }
   
     
 }
