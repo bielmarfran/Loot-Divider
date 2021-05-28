@@ -188,7 +188,7 @@ var lootEvents = [];
     for (let index = 0; index < players.length; index++) {
       for (let index2 = 0; index2 < players.length; index2++) {
         if(index != index2){
-          debt.push({idOwner:index, idTarget:index2, value: 0})
+          debt.push({idOwner:index, idTarget:index2, value: 0, payAll: false})
         }
        
       } 
@@ -271,10 +271,10 @@ var lootEvents = [];
       partShare.forEach(item => {
           pay(item, lootEvent , lastLootEvent, partShare, over);     
       })
-      console.log("-----------------------");
       partShare.forEach(item => {
-          pay2(item, lootEvent , lastLootEvent, partShare, over);
-        
+        console.log(item.payAll)
+        if (item.payAll != true)
+            pay2(item, lootEvent , lastLootEvent, partShare, over);  
       })
 
       partOfDebt(over);
@@ -379,9 +379,9 @@ var lootEvents = [];
   
 
   function pay2(item, lootEvent ,  lastLootEvent, partShare, over){
-
+    
     if(item.ExtraPay > 0){
-      //console.log(item.id, over[item.id].value, item.part);
+      console.warn("pay2");
       var holder = 0;
       if(lastLootEvent.finalPayments[item.id].value  < 0){
         holder = lastLootEvent.finalPayments[item.id].value;
@@ -390,12 +390,21 @@ var lootEvents = [];
       if ((holder + over[item.id].value) < 0  &&  item.part >= Math.abs((holder + over[item.id].value)) ){
         item.partFinal = item.part;
         item.part = 0;
+        console.warn("payAll");
         payAll(item, lastLootEvent, partShare, over, lootEvent);
       }else{
        
         if((holder + over[item.id].value) < 0 &&  item.part < Math.abs((holder + over[item.id].value)) ){ 
           item.partFinal = item.part;
           item.part = 0;
+          if (item.ExtraPay > 0){
+              item.partFinal += item.ExtraPay;
+              item.ExtraPay = 0;
+              item.f
+          }
+              
+          
+          console.warn("payParts",item);
           payParts(item,lastLootEvent, partShare, over, lootEvent);
 
         }   
@@ -421,6 +430,7 @@ var lootEvents = [];
         partShare[debtItem.idTarget].ExtraPay += debtItem.value;
         //item.ExtraPay -= debtItem.value;
         debtItem.value = 0 ;
+        item.payAll = true;
         
       }
     })
@@ -428,83 +438,30 @@ var lootEvents = [];
 
 
   function payParts(item, lastLootEvent, partShare, over, lootEvent){
-    console.log('payParts','ID : '+item.id);
+      console.log('payParts','ID : '+item.id);
       var countDebt = 0 ;
       lootEvent.debt.forEach(debtItem => {   
-       if(debtItem.idOwner == item.id && debtItem.value > 0){
-        countDebt ++;
-       }
-     })
-     //console.log(countDebt);
-     var debtPayment = item.partFinal / countDebt;
-     console.log('payParts 3','ID : '+item.id,debtPayment);
-     var count = 0;
-     while(item.partFinal > 0){
-      console.log('payParts 3','PART : '+item.part);
-      
-      lootEvent.debt.every((debtItem, index) => {
-        console.log('payParts 4');
-        count ++;
-        if(count > 30){
-          debugger
-          throw new Error("Something went badly wrong!");
-        }
-        if(debtItem.idOwner == item.id && debtItem.value > 0){
-         if (debtItem.value < debtPayment) {
-          console.log('payParts 5', debtPayment, item.partFinal );
-          if(item.partFinal - debtPayment < 0){        
-            item.partFinal = 0;
-            return false;
+          if(debtItem.idOwner == item.id && debtItem.value > 0){
+              countDebt ++;
+          }
+      })
+      var debtPayment = item.partFinal / countDebt;
+      while(item.partFinal > 0){
+        console.warn("Still Have Funds to Pay")
 
-          }else{
+        lootEvent.debt.forEach(debtItem => {   
+          if(debtItem.idOwner == item.id){
+            if( debtPayment.toFixed > debtItem.value)
+                debtPayment = debtItem.value;
+
             item.partFinal -= debtPayment;
-            if(over[item.id].value < 0){
-              over[item.id].value += debtPayment;
-            }
-            //console.log(item);
             partShare[debtItem.idTarget].ExtraPay += debtPayment;
             item.ExtraPay -= debtItem.value;
-            debtItem.value -= 0;
-            countDebt --;
-            return false;
+            debtItem.value -= debtPayment;
           }
-       
-         }else{
-          console.log('payParts 6', debtPayment.toFixed(2), item.partFinal.toFixed(2) );
-           if(item.partFinal > 0){
-             if(item.partFinal  >= debtPayment){
-              console.log('payParts 7');
-              item.partFinal -= debtPayment;
-              if(over[item.id].value < 0){
-                over[item.id].value += debtPayment;
-              }       
-              if(over[item.id].value > 0){
-                over[item.id].value = 0;
-              }
-
-              partShare[debtItem.idTarget].ExtraPay += debtPayment;
-              item.ExtraPay -= debtItem.value;
-              debtItem.value -= debtPayment;
-             }else if(debtPayment.toFixed(2) === item.partFinal.toFixed(2)){
-              console.log('payParts 8 - else if');
-              item.partFinal -= debtPayment;
-              partShare[debtItem.idTarget].ExtraPay += debtPayment;
-              item.ExtraPay -= debtItem.value;
-              debtItem.value -= debtPayment;
-
-             }
-            //console.log(item.part);
-           }else{
-            return false;
-           }
-
-         }
-        }
- 
-        return true;
       })
-     }
-     console.log('payParts END','ID : '+item.id);
+      }
+
   }
   
 
