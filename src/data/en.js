@@ -1,0 +1,25 @@
+export default [
+  {
+    name: 'Loot Divider',
+    wiki: 'Wiki',
+    loot: 'Loot',
+    currency: [
+      ['Platinum', 'pp'],
+      ['Gold', 'gp'],
+      ['Electrum', 'ep'],
+      ['Silver', 'sp'],
+      ['Cooper', 'cp'],
+      ['Itens(Gold)', 'gp'],
+    ],
+    share: 'Share',
+    newPlayer: 'Add New Player',
+    removeLoot: 'Remove Last Loot',
+    darkMode: 'Dark Mode',
+    lightMode: 'Light Mode',
+    nameLoot: 'Name of Loot',
+    headers: ['Name of Loot', 'Value of Loot', 'Player 1', 'Player 2'],
+    configuration: 'Configuration',
+    changeName: 'Change Player Name',
+    databaseDeleted: 'Database Deleted',
+  },
+]

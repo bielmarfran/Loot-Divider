@@ -1,62 +1,33 @@
-# Loot Divider
+# NextJS Typescript Boilerplate
 
-## About this Project
+Bootstrap a developer-friendly NextJS app configured with:
 
-Loot Divider is a Vanilla Java Script, Tailwind CSS project which aims to assist in the division of loot in D&D Pathfinder games.
+- [Typescript](https://www.typescriptlang.org/)
+- Linting with [ESLint](https://eslint.org/)
+- Formatting with [Prettier](https://prettier.io/)
+- Linting, typechecking and formatting on by default using [`husky`](https://github.com/typicode/husky) for commit hooks
+- Testing with [Jest](https://jestjs.io/) and [`react-testing-library`](https://testing-library.com/docs/react-testing-library/intro)
 
-## Site
+## Preview
 
-- The site is hosted on https://loot-divider.vercel.app/.
+Preview the example live on [StackBlitz](http://stackblitz.com/):
 
-## Why?
+[![Open in StackBlitz](https://developer.stackblitz.com/img/open_in_stackblitz.svg)](https://stackblitz.com/github/vercel/next.js/tree/canary/examples/with-typescript-eslint-jest)
 
-I started development at the request of my brother, who was dissatisfied with the excel-based solution he had developed.
-This project is the first time that I use the vast majority of technologies, so I'm sure there are irregularities, 
-if you find any please give your feedback.
+## Deploy your own
 
+Deploy the example using [Vercel](https://vercel.com?utm_source=github&utm_medium=readme&utm_campaign=next-example):
 
-## Functionalities
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/git/external?repository-url=https://github.com/vercel/next.js/tree/canary/examples/with-typescript-eslint-jest&project-name=with-typescript-eslint-jest&repository-name=with-typescript-eslint-jest)
 
-- Simple UI
-- Modern and Responsive Design
-- Data persistence using IndexedDB
+## How to use
 
+Execute [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app) with [npm](https://docs.npmjs.com/cli/init) or [Yarn](https://yarnpkg.com/lang/en/docs/cli/create/) to bootstrap the example:
 
-## Getting Started
+```bash
+npx create-next-app --example with-typescript-eslint-jest with-typescript-eslint-jest-app
+# or
+yarn create next-app --example with-typescript-eslint-jest with-typescript-eslint-jest-app
+```
 
-### Prerequisites
-
-Node Installed (v14.16.0 used in this project)
-
-
-With the environment set up.
-
-	git clone https://github.com/bielmarfran/Loot-Divider
-
-Then on the root of the project.
-
-	npm install
-
-	npm run dev
-
-### Distribution
-
-	npm run build
-
-The ./dist folder will be created with filed ready for distribution.
-
-	npm run serve
-
-To test run the distribution version.
-
-## Built With
-
-- [JavaScipt](https://www.javascript.com/)   		 				  		 	  		 
-- [Tailwind CSS](https://tailwindcss.com/)
-- [Vite](https://vitejs.dev/)
-- [IndexedDB](https://developer.mozilla.org/en-US/docs/Web/API/IndexedDB_API)
-- [Localbase](https://www.npmjs.com/package/localbase)
-
-## License
-
-This project is licensed under the MIT - see the [LICENSE.md](https://github.com/bielmarfran/Loot-Divider/blob/main/LICENSE) file for details
+Deploy it to the cloud with [Vercel](https://vercel.com/new?utm_source=github&utm_medium=readme&utm_campaign=next-example) ([Documentation](https://nextjs.org/docs/deployment)).
