@@ -17,11 +17,11 @@ export default function Header(): JSX.Element {
                 aria-hidden="true"
                 title="JavaScript"
               />
-              <h1 className="inline pt-4 ml-2 text-3xl">Loot Divider</h1>
+              <h1 className="inline ml-2 text-3xl py-auto">Loot Divider</h1>
             </div>
           </a>
         </div>
-        <div className="self-center ml-auto sm:mb-0 3xl:place-self-auto">
+        <div className="self-center my-auto ml-auto sm:mb-0 3xl:place-self-auto">
           <a
             href="#"
             className="px-1 pr-10 ml-2 text-2xl font-semibold no-underline 3xl:text-6xl 3xl:pr-20 hover:text-red-600"

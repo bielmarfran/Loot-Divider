@@ -1,7 +1,13 @@
 import React from 'react'
 import { Dialog, Transition } from '@headlessui/react'
-import { Fragment, useRef, useState } from 'react'
+import { Fragment, useRef, useState, useEffect } from 'react'
 import Button from '../Button/Button'
+import InputModal from './InputModal'
+import ConfigModal from './ConfigModal'
+import MultipleInputModal from './multipleInputModal'
+//import ConfigModal from './configModal'
+import en from '../../data/en'
+import { getPlayer } from '../../helpers/crudPlayer'
 
 import { HiCog as GearFill, HiOutlineCog as GearOutline } from 'react-icons/hi'
 
@@ -10,18 +16,23 @@ interface values {
   type: string
   color: string
   text: string
-  style: string
+  style: string | any
+  category: string
+  refresh?: any
+  oldName?: string
 }
 
-export default function Modal(values: {
-  type: string
-  color: string
-  text: string
-  style: string
-}): JSX.Element {
+export default function Modal(values: values): JSX.Element {
   const [isShow, setIsShown] = useState(false)
   const [isOpen, setIsOpen] = useState(false)
   const completeButtonRef = useRef(null)
+  const [data] = useState(en) //, setData
+  const [players, setPlayers] = useState([])
+
+  useEffect(() => {
+    callPlayers()
+    // eslint-disable-next-line no-console
+  }, [])
 
   function closeModal() {
     setIsOpen(false)
@@ -111,34 +122,91 @@ export default function Modal(values: {
               leaveFrom="opacity-100 scale-100"
               leaveTo="opacity-0 scale-95"
             >
-              <div className="inline-block w-full max-w-md p-6 my-8 overflow-hidden text-left align-middle transition-all transform bg-white shadow-xl rounded-2xl">
-                <Dialog.Title
-                  as="h3"
-                  className="text-lg font-medium leading-6 text-gray-900"
-                >
-                  Payment successful
-                </Dialog.Title>
-                <div className="mt-2">
-                  <p className="text-sm text-gray-500">
-                    Your payment has been successfully submitted. We’ve sent
-                    your an email with all of the details of your order.
-                  </p>
-                </div>
-
-                <div className="mt-4">
-                  <button
-                    type="button"
-                    className="inline-flex justify-center px-4 py-2 text-sm font-medium text-blue-900 bg-blue-100 border border-transparent rounded-md hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-blue-500"
-                    onClick={closeModal}
-                  >
-                    Got it, thanks!
-                  </button>
-                </div>
-              </div>
+              {content()}
             </Transition.Child>
           </div>
         </Dialog>
       </Transition>
     </>
   )
+  function content() {
+    switch (values.category) {
+      case 'addPlayer':
+        return (
+          <div className="inline-block p-6 my-8 overflow-hidden text-left align-middle transition-all transform bg-white rounded-lg shadow-xl md:w-1/3">
+            <Dialog.Title
+              as="h3"
+              className="text-lg font-medium leading-6 text-gray-900"
+            >
+              {values.text}
+            </Dialog.Title>
+            <InputModal
+              closeModal={closeModal}
+              input={data[0].playerName}
+              refresh={values.refresh}
+              type={false}
+            />
+          </div>
+        )
+        break
+      case 'changeName':
+        return (
+          <div className="inline-block p-6 my-8 overflow-hidden text-left align-middle transition-all transform bg-white rounded-lg shadow-xl md:w-1/3">
+            <Dialog.Title
+              as="h3"
+              className="text-lg font-medium leading-6 text-gray-900"
+            >
+              {values.text}
+            </Dialog.Title>
+            <InputModal
+              closeModal={closeModal}
+              input={data[0].playerName}
+              refresh={values.refresh}
+              type={true}
+              oldName={values.oldName}
+            />
+          </div>
+        )
+        break
+      case 'multipleInput':
+        return (
+          <div className="inline-block p-6 mt-32 mb-8 overflow-hidden text-left align-middle transition-all transform bg-white rounded-lg shadow-xl md:w-2/3 md:mt-8">
+            <Dialog.Title
+              as="h3"
+              className="text-2xl font-medium leading-6 text-gray-900"
+            >
+              {values.text}
+            </Dialog.Title>
+            <MultipleInputModal
+              closeModal={closeModal}
+              input={players}
+              refresh={values.refresh}
+            />
+          </div>
+        )
+        break
+      case 'configuration':
+        return (
+          <div className="inline-block p-6 my-8 overflow-hidden text-left align-middle transition-all transform bg-white rounded-lg shadow-xl md:w-1/3">
+            <Dialog.Title
+              as="h3"
+              className="text-2xl font-medium leading-6 text-gray-900"
+            >
+              {values.text}
+            </Dialog.Title>
+            <ConfigModal
+              closeModal={closeModal}
+              input={data[0].playerName}
+              refresh={values.refresh}
+            />
+          </div>
+        )
+        break
+      default:
+        break
+    }
+  }
+  async function callPlayers() {
+    setPlayers(await getPlayer())
+  }
 }

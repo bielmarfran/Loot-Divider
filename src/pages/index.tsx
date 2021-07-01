@@ -3,13 +3,27 @@ import Head from 'next/head'
 import Header from '../components/Header/Header'
 import Table from '../components/Table/Table'
 import Modal from '../components/Modal/Modal'
-//import Button from '../components/Button/Button'
-import InputCustom from '../components/Input/Input'
+import InputCustom from '../components/Input/InputCustom'
 import en from '../data/en'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import { getPlayer } from '../helpers/crudPlayer'
+import { getLootEvents, deleteLastLoot } from '../helpers/crudEvent'
+//import { returnHtmlElement } from '../helpers/generic'
 
 export default function Home(): JSX.Element {
   const [data] = useState(en) //, setData
+  const [players, setPlayers] = useState([])
+  const [loot, setLoot] = useState([])
+
+  useEffect(() => {
+    refresh()
+  }, [])
+
+  const refresh = async () => {
+    setPlayers(await getPlayer())
+    setLoot(await getLootEvents())
+  }
+
   return (
     <div className="">
       <html className="dark" />
@@ -21,7 +35,7 @@ export default function Home(): JSX.Element {
       <div className="flex flex-col h-screen bg-gray-100 ">
         {/* dark:bg-brand-light */}
         <div className="grid mx-2 place-items-center sm:rounded-lg">
-          <div id="alertSection" className="hidden w-7/12">
+          {/* <div id="alertSection" className="hidden w-7/12">
             <div className="items-center w-3/4 px-6 py-4 mx-auto my-4 text-lg bg-blue-200 rounded-md xl:w-2/4">
               <svg
                 viewBox="0 0 24 24"
@@ -50,27 +64,28 @@ export default function Home(): JSX.Element {
                 </svg>
               </div>
             </div>
-          </div>
+          </div> */}
           <div className="w-9/12 my-10 bg-white shadow-lg first-line:rounded-lg">
             <Modal
               type={'GearOutline'}
               color={''}
               text={data[0].configuration}
               style={'inline float-right mt-5 mr-5 h-7 w-7'}
+              category={'configuration'}
+              refresh={refresh}
             />
 
-            <form className="w-11/12 py-5 pr-2 m-4 sm:pl-10">
+            <form className="w-11/12 py-5 pr-2 m-4 sm:pl-10" id="totalInput">
               <div className="flex flex-wrap mb-6 ">
                 <div className="w-full mb-6 md:w-full md:mb-0">
-                  <label className="labelInput" htmlFor="grid-first-name">
+                  <label className="labelInput" htmlFor="lootName">
                     {data[0].nameLoot}
                   </label>
                   <input
                     className="block w-full px-4 py-3 mb-3 leading-tight text-gray-700 bg-gray-200 border border-red-500 rounded appearance-none focus:outline-none focus:bg-white"
-                    id="grid-first-name"
+                    id="lootName"
                     type="text"
-                    placeholder="Jane"
-                    value="Loot"
+                    defaultValue={'Loot ' + loot.length}
                   />
                 </div>
               </div>
@@ -86,13 +101,14 @@ export default function Home(): JSX.Element {
 
               <div className="flex flex-wrap mb-6 -mx-3">
                 <div className="w-full px-3 mb-6 md:w-full md:mb-0">
-                  <button
-                    id="Login"
-                    type="button"
-                    className="w-full py-3 mt-10 font-medium text-white uppercase bg-gray-800 rounded-lg focus:outline-none hover:bg-gray-700 hover:shadow-none"
-                  >
-                    {data[0].share}
-                  </button>
+                  <Modal
+                    type={'button'}
+                    color={'gray'}
+                    text={data[0].share}
+                    style={''}
+                    refresh={refresh}
+                    category={'multipleInput'}
+                  />
                 </div>
               </div>
               <div className="flex flex-wrap justify-evenly">
@@ -100,24 +116,36 @@ export default function Home(): JSX.Element {
                   <Modal
                     type={'button'}
                     color={'green'}
-                    text={data[0].newPlayer}
+                    text={data[0].addNewPlayer}
                     style={''}
+                    refresh={refresh}
+                    category={'addPlayer'}
                   />
                 </div>
                 <div className="">
-                  <Modal
-                    type={'button'}
-                    color={'red'}
-                    text={data[0].removeLoot}
-                    style={''}
-                  />
+                  <button
+                    className="w-32 p-2 font-semibold text-white bg-red-400 rounded-md hover:bg-red-600"
+                    type="button"
+                    onClick={async () => {
+                      await deleteLastLoot()
+                      await callLoot()
+                    }}
+                  >
+                    {data[0].removeLoot}
+                  </button>
                 </div>
               </div>
             </form>
           </div>
-          <Table />
+          <Table players={players} loot={loot} refresh={refresh} />
         </div>
       </div>
     </div>
   )
+  // async function callPlayers() {
+  //   setPlayers(await getPlayer())
+  // }
+  async function callLoot() {
+    setLoot(await getLootEvents())
+  }
 }
