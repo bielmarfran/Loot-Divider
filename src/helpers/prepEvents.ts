@@ -51,7 +51,7 @@ export async function getInicialPayment(): Promise<any> {
   // eslint-disable-next-line no-console
   for (let index = 0; index < players.length; index++) {
     const input = document.getElementById(
-      `input${players[index].name}`
+      `${players[index].name}`
     ) as HTMLInputElement
     let initialValue = 0
     try {

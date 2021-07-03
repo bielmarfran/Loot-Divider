@@ -7,22 +7,25 @@ import Modal from '../components/Modal/Modal'
 import InputCustom from '../components/Input/InputCustom'
 import GetData from '../components/GetData/GetData'
 import { useState, useEffect } from 'react'
-import { getPlayer } from '../helpers/crudPlayer'
+import { addDefaultPlayers, getPlayer } from '../helpers/crudPlayer'
 import { getLootEvents, deleteLastLoot } from '../helpers/crudEvent'
 //import { returnHtmlElement } from '../helpers/generic'
 
 export default function Home(): JSX.Element {
   const [players, setPlayers] = useState([])
   const [loot, setLoot] = useState([])
-
+  const [lootName, setLootName] = useState('')
   useEffect(() => {
     refresh()
     theme()
   }, [])
 
   const refresh = async () => {
+    await addDefaultPlayers()
     setPlayers(await getPlayer())
     setLoot(await getLootEvents())
+    const x = await getLootEvents()
+    setLootName('Loot ' + (x.length + 1))
   }
   const data = GetData()
   return (
@@ -90,7 +93,8 @@ export default function Home(): JSX.Element {
                     className="inputIndex"
                     id="lootName"
                     type="text"
-                    defaultValue={'Loot ' + loot.length}
+                    key={lootName}
+                    defaultValue={lootName || ''}
                   />
                 </div>
               </div>
@@ -133,7 +137,7 @@ export default function Home(): JSX.Element {
                     type="button"
                     onClick={async () => {
                       await deleteLastLoot()
-                      await callLoot()
+                      await refresh()
                     }}
                   >
                     {data[0].removeLoot}
@@ -151,9 +155,9 @@ export default function Home(): JSX.Element {
   // async function callPlayers() {
   //   setPlayers(await getPlayer())
   // }
-  async function callLoot() {
-    setLoot(await getLootEvents())
-  }
+  // async function callLoot() {
+  //   setLoot(await getLootEvents())
+  // }
   function theme() {
     if (typeof window !== 'undefined') {
       if (

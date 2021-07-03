@@ -37,6 +37,7 @@ export async function clearInputAll() {
   for (let index = 0; index < data[0].currency.length; index++) {
     clearInput(data[0].currency[index][0], 0)
   }
+  //clearInput('lootName', "");
 
   // clearInput('Gold', 0)
   // clearInput('Electrum', 0)

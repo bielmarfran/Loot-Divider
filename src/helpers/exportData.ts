@@ -15,6 +15,7 @@ export async function exportData(): Promise<void> {
   // eslint-disable-next-line prefer-const
   let data = { player: '', lootEvent: '' }
   const db = new Localbase('db')
+  db.config.debug = false
   await db
     .collection('players')
     .get()

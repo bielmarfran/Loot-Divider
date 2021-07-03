@@ -16,6 +16,7 @@ export async function editPlayer(edit, oldName) {
 
   //console.log('Inside addPlayer');
   //let db = new Localbase('db');
+  //db.config.debug = false
   updatePlayerName2.name = oldName
   edit === true ? (updatePlayerName2.status = true) : ''
   const inputPlayerName = await returnHtmlElement('Player Name')
@@ -80,6 +81,7 @@ async function insertPlayerOldEvents(id, name) {
   // eslint-disable-next-line prefer-const
   let events = []
   const db = new Localbase('db')
+  db.config.debug = false
   await db
     .collection('lootEvent')
     .get()

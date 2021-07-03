@@ -16,8 +16,10 @@ export async function importData(importFile: any): Promise<boolean> {
       //element.value = []
     } else {
       const db = new Localbase('db')
+      db.config.debug = false
       //await db.delete();
       //db = new Localbase('db');
+      db.config.debug = false
       await db.collection('lootEvent').delete()
       data.lootEvent.forEach(async (event) => {
         //console.log(event)

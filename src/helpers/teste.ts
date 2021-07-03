@@ -168,6 +168,7 @@ function myFunction2(event, index, key) {
 
   if (lootEvent.cal === false) {
     const db = new Localbase('db')
+    db.config.debug = false
     lootEvent.cal = true
 
     db.collection('lootEvent').doc({ id: lootEvent.id }).update({

@@ -7,6 +7,7 @@ export async function deleteDataBase() {
   if (r === true) {
     //const { body } = document;
     const db = new Localbase('db')
+    db.config.debug = false
     try {
       await db.collection('lootEvent').delete()
       await db.collection('players').delete()

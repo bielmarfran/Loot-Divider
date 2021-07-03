@@ -3,6 +3,7 @@ import { LootEvent } from '../types'
 
 export async function addLootEvent(lootEvent: LootEvent): Promise<void> {
   const db = new Localbase('db')
+  db.config.debug = false
   db.collection('lootEvent').add({
     id: lootEvent.id,
     order: lootEvent.order,
@@ -26,6 +27,7 @@ export async function addLootEvent2(
   finalPayments
 ): Promise<void> {
   const db = new Localbase('db')
+  db.config.debug = false
   db.collection('lootEvent').add({
     id: lootEvent.id,
     order: lootEvent.order,
@@ -47,6 +49,7 @@ export async function getLootEvents(): Promise<any> {
   let lootEvents2: any = []
   //console.log('getLootEvents Loot');
   const db = new Localbase('db')
+  db.config.debug = false
   await db
     .collection('lootEvent')
     .get()
@@ -60,6 +63,7 @@ export async function getLootEvents(): Promise<any> {
 
 export async function deleteLastLoot(): Promise<void> {
   const db = new Localbase('db')
+  db.config.debug = false
   await db
     .collection('lootEvent')
     .get()
@@ -76,6 +80,7 @@ export async function updatePlayer(player: {
   newName: any
 }): Promise<void> {
   const db = new Localbase('db')
+  db.config.debug = false
   await db.collection('players').doc({ name: player.name }).update({
     name: player.newName,
   })
