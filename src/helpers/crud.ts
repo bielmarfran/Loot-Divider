@@ -1,7 +1,9 @@
 import Localbase from 'localbase'
+import GetData from './GetData'
 
 export async function deleteDataBase() {
-  const r = confirm('Tem certeza que deseja limpar os dados ?')
+  const data = await GetData()
+  const r = confirm(data[0].confirmDeleteDatabase)
   if (r === true) {
     //const { body } = document;
     const db = new Localbase('db')

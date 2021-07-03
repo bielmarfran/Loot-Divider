@@ -8,7 +8,7 @@ export default function Button(buttonValues: {
 }): JSX.Element {
   const palette = {
     green:
-      'w-32 p-2 font-semibold text-white bg-green-600 rounded-md hover:bg-green-700',
+      'w-32 p-2 font-semibold text-white bg-green-600 rounded-md hover:bg-green-700 dark:bg-dark-green dark:hover:bg-dark-green2',
     gray: 'w-full py-3 mt-10 font-medium text-white uppercase bg-gray-800 rounded-lg focus:outline-none hover:bg-gray-700 hover:shadow-none',
   }
   return (

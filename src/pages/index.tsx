@@ -1,40 +1,45 @@
 import Head from 'next/head'
 //import Link from 'next/link'
 import Header from '../components/Header/Header'
+import Footer from '../components/Footer/Footer'
 import Table from '../components/Table/Table'
 import Modal from '../components/Modal/Modal'
 import InputCustom from '../components/Input/InputCustom'
-import en from '../data/en'
+import GetData from '../components/GetData/GetData'
 import { useState, useEffect } from 'react'
 import { getPlayer } from '../helpers/crudPlayer'
 import { getLootEvents, deleteLastLoot } from '../helpers/crudEvent'
 //import { returnHtmlElement } from '../helpers/generic'
 
 export default function Home(): JSX.Element {
-  const [data] = useState(en) //, setData
   const [players, setPlayers] = useState([])
   const [loot, setLoot] = useState([])
 
   useEffect(() => {
     refresh()
+    theme()
   }, [])
 
   const refresh = async () => {
     setPlayers(await getPlayer())
     setLoot(await getLootEvents())
   }
-
+  const data = GetData()
   return (
-    <div className="">
-      <html className="dark" />
+    <div className="bg-gray-100 dark:bg-dark">
+      {/* <html className="dark" /> */}
       <Head>
         <title>Loot Divider</title>
         <link rel="icon" href="/favicon.ico" />
+        <meta
+          name="description"
+          content="Loot Divider a platform to streamline the process of Loot distribution in D&D Pathfinder games."
+        ></meta>
       </Head>
-      <Header />
-      <div className="flex flex-col h-screen bg-gray-100 ">
-        {/* dark:bg-brand-light */}
-        <div className="grid mx-2 place-items-center sm:rounded-lg">
+      <Header refresh={refresh} />
+      <div className="flex flex-col bg-gray-100 dark:bg-dark-light md:h-screen">
+        {/*  */}
+        <div className="grid mx-2 place-items-center sm:rounded-lg dark:bg-dark-light">
           {/* <div id="alertSection" className="hidden w-7/12">
             <div className="items-center w-3/4 px-6 py-4 mx-auto my-4 text-lg bg-blue-200 rounded-md xl:w-2/4">
               <svg
@@ -65,7 +70,7 @@ export default function Home(): JSX.Element {
               </div>
             </div>
           </div> */}
-          <div className="w-9/12 my-10 bg-white shadow-lg first-line:rounded-lg">
+          <div className="w-9/12 my-10 bg-white shadow-lg first-line:rounded-lg dark:bg-dark dark:text-white">
             <Modal
               type={'GearOutline'}
               color={''}
@@ -82,7 +87,7 @@ export default function Home(): JSX.Element {
                     {data[0].nameLoot}
                   </label>
                   <input
-                    className="block w-full px-4 py-3 mb-3 leading-tight text-gray-700 bg-gray-200 border border-red-500 rounded appearance-none focus:outline-none focus:bg-white"
+                    className="inputIndex"
                     id="lootName"
                     type="text"
                     defaultValue={'Loot ' + loot.length}
@@ -124,7 +129,7 @@ export default function Home(): JSX.Element {
                 </div>
                 <div className="">
                   <button
-                    className="w-32 p-2 font-semibold text-white bg-red-400 rounded-md hover:bg-red-600"
+                    className="w-32 p-2 font-semibold text-white bg-red-400 rounded-md hover:bg-red-600 dark:bg-dark-red dark:hover:bg-dark-red2"
                     type="button"
                     onClick={async () => {
                       await deleteLastLoot()
@@ -139,6 +144,7 @@ export default function Home(): JSX.Element {
           </div>
           <Table players={players} loot={loot} refresh={refresh} />
         </div>
+        <Footer />
       </div>
     </div>
   )
@@ -147,5 +153,23 @@ export default function Home(): JSX.Element {
   // }
   async function callLoot() {
     setLoot(await getLootEvents())
+  }
+  function theme() {
+    if (typeof window !== 'undefined') {
+      if (
+        localStorage.theme === 'dark' ||
+        (!('theme' in localStorage) &&
+          window.matchMedia('(prefers-color-scheme: dark)').matches)
+      ) {
+        //document.documentElement.classList.add('dark')
+      } else {
+        //document.documentElement.classList.remove('dark')
+      }
+
+      // Whenever the user explicitly chooses light mode
+
+      // Whenever the user explicitly chooses dark mode
+      //localStorage.theme = 'dark'
+    }
   }
 }

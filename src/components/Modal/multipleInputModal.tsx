@@ -1,8 +1,8 @@
 import React, { useEffect } from 'react'
 import InputCustom from '../Input/InputCustom'
-//
+import GetData from '../GetData/GetData'
 // import { addLootEvent } from '../../helpers/crudOperations'
-import { getTotal, getInicialPayment } from '../../helpers/prepEvents'
+import { getTotal } from '../../helpers/prepEvents'
 import { cleanEvent } from '../../helpers/teste'
 import { clearInputAll } from '../../helpers/formatData'
 
@@ -12,20 +12,23 @@ export default function MultipleInputModal(props: {
   refresh: any
 }): JSX.Element {
   const total = getTotal()
+  const data = GetData()
   useEffect(() => {
     if (total < props.input.length / 100 || total === 0) {
       // create = false;
-      window.alert('Insira o minimo')
+      window.alert(data[0].enterMinimum)
       props.closeModal()
     }
     // eslint-disable-next-line no-console
-    console.log(getInicialPayment())
+    //console.log(getInicialPayment())
   }, [])
 
   return (
     <div className="">
-      <div className="flex justify-between px-5 py-4 mb-4 border-b border-gray-100"></div>
-      <span className="mb-5 text-2xl">{'Total : ' + total}</span>
+      <div className="flex justify-between px-5 py-4 mb-4 border-b border-gray-100 dark:border-dark-border"></div>
+      <span className="mb-5 text-2xl dark:text-dark-text">
+        {'Total : ' + total}
+      </span>
       <div className="w-full mt-4 md:mb-0">
         <div className="grid mb-2 -mx-3 gap-y-2 md:grid-cols-2">
           {props.input.map((player, index) => (

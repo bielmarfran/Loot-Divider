@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { exportData } from '../../helpers/exportData'
 import { importData } from '../../helpers/importData'
 import { deleteDataBase } from '../../helpers/crud'
-
+import GetData from '../GetData/GetData'
 //import InputCustom from '../Input/InputCustom'
 
 //  interface Props {
@@ -17,9 +17,10 @@ export default function ConfigModal(props: {
   oldName?: string
 }): JSX.Element {
   const [importFile, setImportFile] = useState()
+  const data = GetData()
   return (
     <div className="">
-      <div className="flex justify-between px-5 py-4 border-b border-gray-100">
+      <div className="flex justify-between px-5 py-4 border-b border-gray-100 dark:border-dark-border">
         <div>
           <i className="text-orange-500 fa fa-exclamation-triangle"></i>
         </div>
@@ -31,7 +32,7 @@ export default function ConfigModal(props: {
       </div>
       <div className="w-full p-3 md:mb-0">
         <div>
-          Limpar o bando de dados :
+          {data[0].deleteDatabase + ':'}
           <button
             type="button"
             className="px-4 py-2 ml-3 mr-3 font-bold text-white bg-red-500 rounded hover:bg-red-700 "
@@ -42,11 +43,11 @@ export default function ConfigModal(props: {
               }
             }}
           >
-            Limpar Banco
+            {data[0].deleteDatabase}
           </button>
         </div>
         <div>
-          Exportar o banco de Dados :
+          {data[0].exportDatabase + ':'}
           <button
             type="button"
             onClick={() => {
@@ -54,13 +55,13 @@ export default function ConfigModal(props: {
             }}
             className="px-4 py-2 mt-2 ml-3 mr-3 font-bold text-white bg-blue-500 rounded hover:bg-blue-700"
           >
-            Exportar Banco
+            {data[0].exportDatabase}
           </button>
         </div>
-        <hr className="my-5" />
+        <hr className="my-5 dark:bg-dark-border" />
         <div className="">
           {/* disabled="true" */}
-          Importar o banco de Dados :
+          {data[0].importDatabase + ':'}
           <input
             type="file"
             id="file-selector"
@@ -73,11 +74,12 @@ export default function ConfigModal(props: {
                 try {
                   const result = event.target.result as string
                   setImportFile(JSON.parse(result))
-                  //localStorage.setItem('import', x);
-                  //document.getElementById("importBank").disabled = false;
                 } catch (error) {
-                  window.alert('Erro ao ler o arquivo.')
-                  //document.getElementById('file-selector').value = [];
+                  window.alert(data[0].errorReadingFile)
+                  const fileSelect = document.getElementById(
+                    'file-selector'
+                  ) as HTMLInputElement
+                  fileSelect.value = ''
                 }
               })
               reader.readAsText(file)
@@ -95,7 +97,7 @@ export default function ConfigModal(props: {
             }}
             className="px-4 py-2 mt-2 ml-3 mr-3 font-bold text-white bg-blue-500 rounded hover:bg-blue-700"
           >
-            Importar Banco
+            {data[0].importDatabase}
           </button>
         </div>
       </div>

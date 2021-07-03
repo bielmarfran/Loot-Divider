@@ -1,3 +1,4 @@
+import GetData from './GetData'
 export function formatReturn(value) {
   let returnValue
   returnValue = getGold(value)
@@ -29,13 +30,19 @@ function getSilver(value) {
   return strResponse
 }
 
-export function clearInputAll() {
-  clearInput('Platinum', 0)
-  clearInput('Gold', 0)
-  clearInput('Electrum', 0)
-  clearInput('Silver', 0)
-  clearInput('Cooper', 0)
-  clearInput('Itens', 0)
+export async function clearInputAll() {
+  const data = await GetData()
+  // eslint-disable-next-line no-console
+  console.log(data[0].currency)
+  for (let index = 0; index < data[0].currency.length; index++) {
+    clearInput(data[0].currency[index][0], 0)
+  }
+
+  // clearInput('Gold', 0)
+  // clearInput('Electrum', 0)
+  // clearInput('Silver', 0)
+  // clearInput('Copper', 0)
+  // clearInput('Itens', 0)
 }
 
 function clearInput(key, value) {

@@ -4,9 +4,9 @@ import { Fragment, useRef, useState, useEffect } from 'react'
 import Button from '../Button/Button'
 import InputModal from './InputModal'
 import ConfigModal from './ConfigModal'
+import GetData from '../GetData/GetData'
 import MultipleInputModal from './multipleInputModal'
-//import ConfigModal from './configModal'
-import en from '../../data/en'
+
 import { getPlayer } from '../../helpers/crudPlayer'
 
 import { HiCog as GearFill, HiOutlineCog as GearOutline } from 'react-icons/hi'
@@ -26,7 +26,7 @@ export default function Modal(values: values): JSX.Element {
   const [isShow, setIsShown] = useState(false)
   const [isOpen, setIsOpen] = useState(false)
   const completeButtonRef = useRef(null)
-  const [data] = useState(en) //, setData
+  const data = GetData()
   const [players, setPlayers] = useState([])
 
   useEffect(() => {
@@ -90,7 +90,7 @@ export default function Modal(values: values): JSX.Element {
         <Dialog
           initialFocus={completeButtonRef}
           as="div"
-          className="fixed inset-0 z-10 overflow-y-auto"
+          className="fixed inset-0 z-10 overflow-y-auto transition-opacity bg-gray-900 bg-opacity-50 "
           onClose={closeModal}
         >
           <div className="min-h-screen px-4 text-center">
@@ -133,10 +133,10 @@ export default function Modal(values: values): JSX.Element {
     switch (values.category) {
       case 'addPlayer':
         return (
-          <div className="inline-block p-6 my-8 overflow-hidden text-left align-middle transition-all transform bg-white rounded-lg shadow-xl md:w-1/3">
+          <div className="inline-block p-6 my-8 overflow-hidden text-left align-middle transition-all transform bg-white rounded-lg shadow-xl md:w-1/3 dark:bg-dark-modal">
             <Dialog.Title
               as="h3"
-              className="text-lg font-medium leading-6 text-gray-900"
+              className="text-lg font-medium leading-6 text-gray-900 dark:text-dark-text"
             >
               {values.text}
             </Dialog.Title>
@@ -151,10 +151,10 @@ export default function Modal(values: values): JSX.Element {
         break
       case 'changeName':
         return (
-          <div className="inline-block p-6 my-8 overflow-hidden text-left align-middle transition-all transform bg-white rounded-lg shadow-xl md:w-1/3">
+          <div className="inline-block p-6 my-8 overflow-hidden text-left align-middle transition-all transform bg-white rounded-lg shadow-xl md:w-1/3 dark:bg-dark-modal">
             <Dialog.Title
               as="h3"
-              className="text-lg font-medium leading-6 text-gray-900"
+              className="text-lg font-medium leading-6 text-gray-900 dark:text-dark-text"
             >
               {values.text}
             </Dialog.Title>
@@ -170,10 +170,10 @@ export default function Modal(values: values): JSX.Element {
         break
       case 'multipleInput':
         return (
-          <div className="inline-block p-6 mt-32 mb-8 overflow-hidden text-left align-middle transition-all transform bg-white rounded-lg shadow-xl md:w-2/3 md:mt-8">
+          <div className="inline-block p-6 mt-32 mb-8 overflow-hidden text-left align-middle transition-all transform bg-white rounded-lg shadow-xl md:w-2/3 md:mt-8 dark:bg-dark-modal">
             <Dialog.Title
               as="h3"
-              className="text-2xl font-medium leading-6 text-gray-900"
+              className="text-2xl font-medium leading-6 text-gray-900 dark:text-dark-text"
             >
               {values.text}
             </Dialog.Title>
@@ -187,10 +187,10 @@ export default function Modal(values: values): JSX.Element {
         break
       case 'configuration':
         return (
-          <div className="inline-block p-6 my-8 overflow-hidden text-left align-middle transition-all transform bg-white rounded-lg shadow-xl md:w-1/3">
+          <div className="inline-block p-6 my-8 overflow-hidden text-left align-middle transition-all transform bg-white rounded-lg shadow-xl md:w-1/3 dark:bg-dark-modal dark:border-dark-border">
             <Dialog.Title
               as="h3"
-              className="text-2xl font-medium leading-6 text-gray-900"
+              className="text-2xl font-medium leading-6 text-gray-900 dark:text-dark-text"
             >
               {values.text}
             </Dialog.Title>

@@ -1,7 +1,8 @@
-import React, { useState } from 'react'
-import en from '../../data/en'
+import React, { useState, useEffect } from 'react'
+
+import GetData from '../GetData/GetData'
 import Modal from '../Modal/Modal'
-import { HiMinus as Minus } from 'react-icons/hi'
+import { HiMinus as Minus, HiPlus as Plus } from 'react-icons/hi'
 import { formatReturn } from '../../helpers/formatData'
 //, HiPlus as Plus
 export default function Table(props: {
@@ -9,28 +10,29 @@ export default function Table(props: {
   loot: any
   refresh: any
 }): JSX.Element {
-  const [data] = useState(en)
+  const data = GetData()
+  const [show, setShow] = useState('')
+  //const [tableSize, setTableSize] = useState(0)
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      setShow(window.localStorage.getItem('show'))
+    }
+  }, [])
+
   const headers = data[0].headers
   // eslint-disable-next-line no-console
-  //console.log('TABLE')
+
   return (
-    <div className="container">
-      <table className="flex flex-row flex-no-wrap w-full my-5 overflow-hidden bg-white rounded-lg sm:shadow-lg">
+    <div className="w-9/12 ">
+      <table className="flex flex-row flex-no-wrap w-full my-5 overflow-hidden bg-white rounded-lg sm:shadow-lg dark:bg-dark">
         <thead className="text-white" id="tHead">
-          {props.loot.lenght > 0 ? (
+          {props.loot.length > 0 ? (
             props.loot.map((loot, index2) => (
               <tr className="flex-no wrap headerTableSize" key={index2}>
                 {headers.map((column, index) => (
                   <th className="headerStyle" key={index}>
-                    {index == 0 && index2 == 0 ? (
-                      <Minus
-                        className="inline float-left w-6 h-6 ml-2"
-                        aria-hidden="true"
-                        title="Minus"
-                      />
-                    ) : (
-                      ''
-                    )}
+                    {index == 0 && index2 == 0 ? getIcon() : ''}
                     {column}
                   </th>
                 ))}
@@ -41,7 +43,7 @@ export default function Table(props: {
                         type={'GearOutline'}
                         color={''}
                         text={data[0].changeName}
-                        style={'h-6 w-6  inline	float-right ml-2 mt-0.5'}
+                        style={'h-5 w-5  inline	float-right ml-2 mt-0.5'}
                         category="changeName"
                         refresh={props.refresh}
                         oldName={player.name}
@@ -59,15 +61,7 @@ export default function Table(props: {
             <tr className="flex-no wrap headerTableSize">
               {headers.map((column, index) => (
                 <th className="headerStyle" key={index}>
-                  {index == 0 ? (
-                    <Minus
-                      className="inline float-left w-6 h-6 ml-2"
-                      aria-hidden="true"
-                      title="Minus"
-                    />
-                  ) : (
-                    ''
-                  )}
+                  {index == 0 ? getIcon() : ''}
                   {column}
                 </th>
               ))}
@@ -91,7 +85,14 @@ export default function Table(props: {
         <tbody className="flex-1 sm:flex-none" id="rowTbody">
           {props.loot !== undefined
             ? props.loot.map((loot, index) => (
-                <tr className="rowTableTr flex-no wrap" key={index}>
+                <tr
+                  className={
+                    show == 'less' && index < props.loot.length - 2
+                      ? 'hidden'
+                      : 'rowTableTr flex-no wrap'
+                  }
+                  key={index}
+                >
                   <th className=" rowTableTd">{props.loot[index].loot.name}</th>
                   <th className=" rowTableTd">
                     {formatReturn(props.loot[index].loot.value)}
@@ -100,7 +101,9 @@ export default function Table(props: {
                     <th
                       className={
                         props.loot[index].players[index2].active == true
-                          ? 'rowTableTd'
+                          ? pay.value < 0
+                            ? 'rowTableTdNegative'
+                            : 'rowTableTd'
                           : 'rowTableTdNotActive'
                       }
                       key={index + 2 + index2}
@@ -117,5 +120,46 @@ export default function Table(props: {
       </table>
     </div>
   )
+  function getIcon() {
+    if (typeof window !== 'undefined') {
+      if (show == 'less') {
+        return (
+          <Minus
+            className="inline float-left w-6 h-6 ml-2"
+            aria-hidden="true"
+            title="Minus"
+            onClick={() => {
+              localStorage.setItem('show', 'more')
+              setShow('more')
+              //collapseTable()
+            }}
+          />
+        )
+      } else {
+        return (
+          <Plus
+            className="inline float-left w-6 h-6 ml-2"
+            aria-hidden="true"
+            title="Plus"
+            onClick={() => {
+              localStorage.setItem('show', 'less')
+              setShow('less')
+              //collapseTable()
+            }}
+          />
+        )
+      }
+    }
+  }
+  //  function collapseTable() {
+
+  //    //const table = document.getElementById('rowTbody').getElementsByTagName('tr')
+  //    if (show == 'less') {
+  //     //setTableSize(props.loot.length - 2)
+  //    } else {
+  //     //setTableSize(props.loot.length)
+  //    }
+  //    console.log(props.loot.length)
+  //  }
 }
 //props.loot[index2].players === true ? 'rowTableTd' :  'rowTableTdNotActive'

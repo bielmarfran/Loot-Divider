@@ -67,8 +67,6 @@ export async function deleteLastLoot(): Promise<void> {
       if (loot.length > 0) {
         const last = loot.pop()
         await db.collection('lootEvent').doc({ id: last.id }).delete()
-      } else {
-        alert('Erro')
       }
     })
 }

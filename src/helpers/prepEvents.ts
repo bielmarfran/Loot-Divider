@@ -1,5 +1,5 @@
 import { getPlayer } from './crudPlayer'
-
+//import GetData from './GetData'
 /**
  * This function converts all input on different coins to gold.
  * @param coins
@@ -8,14 +8,23 @@ import { getPlayer } from './crudPlayer'
 
 export function getTotal(): number {
   let totalValue = 0
-
-  totalValue += getValue('Platinum') * 10
-  totalValue += getValue('Gold')
-  totalValue += getValue('Electrum') / 2
-  totalValue += getValue('Silver') / 10
-  totalValue += getValue('Cooper') / 100
-  // Divide Itens value by 2
-  totalValue += getValue('Itens') / 2
+  if (navigator.language.startsWith('pt')) {
+    totalValue += getValue('Platina') * 10
+    totalValue += getValue('Ouro')
+    totalValue += getValue('Electrum') / 2
+    totalValue += getValue('Prata') / 10
+    totalValue += getValue('Cobre') / 100
+    // Divide Itens value by 2
+    totalValue += getValue('Itens') / 2
+  } else {
+    totalValue += getValue('Platinum') * 10
+    totalValue += getValue('Gold')
+    totalValue += getValue('Electrum') / 2
+    totalValue += getValue('Silver') / 10
+    totalValue += getValue('Copper') / 100
+    // Divide Itens value by 2
+    totalValue += getValue('Itens') / 2
+  }
 
   return totalValue
   // alert(total)

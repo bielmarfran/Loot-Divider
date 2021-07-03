@@ -18,7 +18,7 @@ export async function editPlayer(edit, oldName) {
   //let db = new Localbase('db');
   updatePlayerName2.name = oldName
   edit === true ? (updatePlayerName2.status = true) : ''
-  const inputPlayerName = returnHtmlElement('Player Name')
+  const inputPlayerName = await returnHtmlElement('Player Name')
   const playerName = inputPlayerName.value
 
   const index = players.findIndex((element) => element.name == playerName)
@@ -65,11 +65,11 @@ async function updatePlayerName(playerName: string, inputPlayerName) {
 async function createPlayer(players, playerName: string, inputPlayerName) {
   players.push({ id: players.length, name: playerName, active: true })
 
-  addPlayer(players[players.length - 1])
+  await addPlayer(players[players.length - 1])
 
   players = await getPlayer()
 
-  insertPlayerOldEvents(players.length, playerName)
+  await insertPlayerOldEvents(players.length, playerName)
 
   //modalClose('mymodalcentered2');
 
@@ -106,7 +106,7 @@ async function insertPlayerOldEvents(id, name) {
         }
       }
     }
-    oldDebt.forEach((item) => {
+    oldDebt.forEach(async (item) => {
       const index = event.debt.findIndex(function (item2) {
         //if(idHolder != item2.id)
         return item.idOwner == item2.idOwner && item.idTarget == item2.idTarget
