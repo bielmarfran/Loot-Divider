@@ -39,6 +39,13 @@ export async function cleanEvent(key) {
       lootName.value = 'Loot 0'
     }
     const initial = await getInicialPayment()
+    let sum = 0
+    initial.forEach((element) => {
+      sum += element.value
+    })
+    if (sum > total) {
+      return false
+    }
     const final = await createFinalPayments()
     const debt = await createDebt()
     // eslint-disable-next-line no-debugger
@@ -69,6 +76,13 @@ export async function cleanEvent(key) {
       lootName.value = `Loot ${lastElement[0].id + 1}`
     }
     const initial = await getInicialPayment()
+    let sum = 0
+    initial.forEach((element) => {
+      sum += element.value
+    })
+    if (sum > total) {
+      return false
+    }
     const final = await createFinalPayments()
     const debt = await createDebt()
 
@@ -91,7 +105,7 @@ export async function cleanEvent(key) {
     myFunction2(lootEvent, lastElement[0].id + 1, key)
   }
   //clearInputAll();
-  return
+  return true
 }
 
 function myFunction2(event, index, key) {

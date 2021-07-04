@@ -34,5 +34,6 @@ export default [
     cancelOperation:
       'Os dados inseridos são inválidos, cancelando a importação.',
     errorReadingFile: 'Erro ao ler o arquivo.',
+    maxValue: 'Valor máximo ultrapassado.',
   },
 ]

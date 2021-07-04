@@ -33,5 +33,6 @@ export default [
     confirmOperation: 'This operation will remove the current data, Continue?',
     cancelOperation: 'The data entered is invalid, canceling the import.',
     errorReadingFile: 'Error reading file.',
+    maxValue: 'Maximum value exceeded..',
   },
 ]

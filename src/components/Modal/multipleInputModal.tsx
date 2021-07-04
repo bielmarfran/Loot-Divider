@@ -1,16 +1,18 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import InputCustom from '../Input/InputCustom'
 import GetData from '../GetData/GetData'
 // import { addLootEvent } from '../../helpers/crudOperations'
 import { getTotal } from '../../helpers/prepEvents'
 import { cleanEvent } from '../../helpers/teste'
 import { clearInputAll } from '../../helpers/formatData'
+import Alert from '../Alert/Alert'
 
 export default function MultipleInputModal(props: {
   closeModal: () => void
   input: any
   refresh: any
 }): JSX.Element {
+  const [showAlert, setShowAlert] = useState(false)
   const total = getTotal()
   const data = GetData()
   useEffect(() => {
@@ -29,10 +31,17 @@ export default function MultipleInputModal(props: {
       <span className="mb-5 text-2xl dark:text-dark-text">
         {'Total : ' + total}
       </span>
+      {showAlert ? <Alert message={data[0].maxValue} /> : ''}
       <div className="w-full mt-4 md:mb-0">
         <div className="grid mb-2 -mx-3 gap-y-2 md:grid-cols-2">
           {props.input.map((player, index) => (
-            <InputCustom name={player.name} key={index} placeholder={'0'} />
+            <InputCustom
+              name={player.name}
+              key={index}
+              placeholder={'0'}
+              change={true}
+              type={'number'}
+            />
           ))}
         </div>
       </div>
@@ -42,10 +51,14 @@ export default function MultipleInputModal(props: {
           type="button"
           className="px-4 py-2 mr-3 font-bold text-white bg-blue-500 rounded hover:bg-blue-700"
           onClick={async () => {
-            await cleanEvent('2')
-            props.closeModal()
-            clearInputAll()
-            props.refresh()
+            if (await cleanEvent('2')) {
+              props.closeModal()
+              clearInputAll()
+              props.refresh()
+              setShowAlert(false)
+            } else {
+              setShowAlert(true)
+            }
           }}
         >
           Ok

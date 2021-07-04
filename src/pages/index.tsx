@@ -42,7 +42,7 @@ export default function Home(): JSX.Element {
       <Header refresh={refresh} />
       <div className="flex flex-col bg-gray-100 dark:bg-dark-light md:h-screen">
         {/*  */}
-        <div className="grid mx-2 place-items-center sm:rounded-lg dark:bg-dark-light">
+        <div className="grid mx-2 bg-gray-100 place-items-center sm:rounded-lg dark:bg-dark-light">
           {/* <div id="alertSection" className="hidden w-7/12">
             <div className="items-center w-3/4 px-6 py-4 mx-auto my-4 text-lg bg-blue-200 rounded-md xl:w-2/4">
               <svg
