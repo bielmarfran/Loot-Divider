@@ -1,0 +1,81 @@
+/* ./styles/globals.css */
+@tailwind base;
+
+@tailwind components;
+
+@tailwind utilities;
+
+.hello {
+  color: red;
+}
+
+html,
+body {
+  height: 100%;
+}
+
+@media (min-width: 640px) {
+  table {
+    display: inline-table !important;
+  }
+
+  thead tr:not(:first-child) {
+    display: none;
+  }
+}
+
+/* td:not(:last-child) {
+  border-bottom: 0;
+} 
+
+ th:not(:last-child) {
+  border-bottom: 2px solid rgba(0, 0, 0, 0.1);
+}   */
+td:not(:last-child) {
+  border-bottom: 0;
+}
+
+th {
+  border-bottom: 2px solid rgba(0, 0, 0, 0.1);
+}
+
+@layer components {
+  body {
+    @apply dark:bg-dark;
+  }
+  .inputIndex {
+    @apply block w-full px-4 py-3 leading-tight bg-gray-200 border border-gray-200 rounded appearance-none focus:outline-none focus:bg-white focus:border-gray-500 dark:bg-dark-lightest dark:border-dark-border dark:text-white;
+  }
+
+  .inputIndexRed {
+    @apply block w-full px-4 py-3 leading-tight bg-gray-200 border border-red-400 rounded appearance-none focus:outline-none focus:bg-white focus:border-gray-500 dark:bg-dark-lightest dark:border-dark-red dark:text-white;
+  }
+
+  .headerTableSize {
+    @apply flex flex-col mb-8 bg-gray-800 rounded sm:table-row sm:rounded-none sm:mb-1;
+  }
+
+  .headerStyle {
+    @apply p-3 text-center;
+  }
+
+  .rowTableTr {
+    @apply flex flex-col mb-8 text-center sm:table-row sm:mb-1 dark:bg-dark dark:text-white dark:border-dark-border;
+  }
+
+  .rowTableTd {
+    @apply p-3 truncate border hover:bg-gray-200 dark:bg-dark dark:text-white dark:border-dark-border dark:hover:bg-dark-lightest;
+  }
+
+  .rowTableTdNegative {
+    @apply p-3 text-red-400 truncate border hover:bg-gray-200 dark:border-dark-border dark:text-dark-red dark:hover:bg-dark-lightest;
+  }
+
+  .rowTableTdNotActive {
+    @apply p-3 truncate bg-gray-300 border dark:bg-dark-notActive dark:border-dark-border;
+  }
+
+  .labelInput {
+    @apply block mb-2 text-xs font-bold tracking-wide text-gray-700 uppercase dark:text-dark-text;
+  }
+}
