@@ -29,6 +29,7 @@ export async function importData(importFile: any): Promise<boolean> {
       data.player.forEach(async (player) => {
         await addPlayer(player)
       })
+
       return true
       //reloadPage();
     }

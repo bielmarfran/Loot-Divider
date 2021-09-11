@@ -8,9 +8,10 @@ export default function InputCustom(inputValues: {
   change?: boolean
 }): JSX.Element {
   const [control, setControl] = useState(inputValues.name)
-  let total = 0
+  const [total, setTotal] = useState(0)
+  // total = 0
   useEffect(() => {
-    total = getTotal()
+    setTotal(getTotal())
   }, [])
   return (
     <div className="w-full px-3 mb-6 md:mb-0">
@@ -23,7 +24,7 @@ export default function InputCustom(inputValues: {
         type={inputValues.type !== null ? inputValues.type : 'number'}
         min="1"
         step="1"
-        pattern="\d+"
+        //pattern="\d+"
         placeholder={inputValues.placeholder}
         defaultValue={inputValues.value}
         key={control}
@@ -37,6 +38,8 @@ export default function InputCustom(inputValues: {
                   ) as HTMLInputElement
                   input.value = '0' || ''
                   input.className = 'inputIndexRed'
+                  // eslint-disable-next-line no-console
+                  console.log('Over Max', total)
                   setControl(inputValues.name)
                 }
               }

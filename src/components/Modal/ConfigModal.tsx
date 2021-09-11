@@ -91,7 +91,10 @@ export default function ConfigModal(props: {
             onClick={async () => {
               if (await importData(importFile)) {
                 // eslint-disable-next-line no-console
-                await props.refresh()
+                setTimeout(async () => {
+                  await props.refresh()
+                }, 1000)
+                //
                 await props.closeModal()
               }
             }}
